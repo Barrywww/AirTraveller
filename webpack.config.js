@@ -1,0 +1,65 @@
+const webpack = require('webpack');
+const path = require('path');
+
+module.exports = {
+    entry: './src/bundle.js',
+    output: {
+        filename: "bundle.js",
+        path: path.join(__dirname, 'public')
+    },
+    module: {
+        rules: [{
+            loader: 'babel-loader',
+            test: /\.js$/,
+            exclude: /node_modules/,
+            options: {
+                plugins: [
+                    ['import', {libraryName: "antd", style: true}]
+                ]
+            },
+        },
+            {
+                // modify
+                test: [/\.css$/, /\.less$/],
+                use: [
+                    {loader: 'style-loader'},
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                        },
+                    },
+                    {
+                        loader: 'less-loader', // compiles Less to CSS
+                        options: {
+                            javascriptEnabled: true
+                        }
+                    }
+                ],
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            publicPath: "./",
+                            limit: 10000
+                        }
+                    }
+                ]
+            }]
+    },
+    devServer: {
+        open: true,
+        hot: true,
+        compress: true,
+        contentBase: path.join(__dirname, 'public')
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
+    performance: {
+        hints: false
+    }
+}

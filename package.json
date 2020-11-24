@@ -1,0 +1,39 @@
+{
+  "name": "airtraveller",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development",
+    "watch": "webpack --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.8",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "antd": "^4.8.5",
+    "babel-loader": "^8.2.1",
+    "babel-plugin-import": "^1.13.1",
+    "css-loader": "^5.0.1",
+    "file-loader": "^6.2.0",
+    "img-loader": "^3.0.2",
+    "less": "^3.12.2",
+    "less-loader": "^5.0.0",
+    "moment": "^2.29.1",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hot-loader": "^4.13.0"
+  }
+}
