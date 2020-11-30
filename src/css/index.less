@@ -1,0 +1,94 @@
+@import "../../node_modules/antd/dist/antd.less";
+@import (css) url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Oswald&display=swap');
+
+//red: #b00020
+@primary-color: #00b090;
+//@component-background: #ffffff;
+//@modal-header-bg: #ffffff;
+@layout-header-background: #ffffff;
+//@layout-header-color: #000000;
+//@text-color: #000000;
+
+#logo{
+  justify-content: center;
+  align-items: center;
+  height:45px;
+  margin-bottom: 5px;
+  //margin-left: 5px;
+}
+
+#headerMenu{
+  background-color: transparent;
+  border-bottom: 0;
+  position: absolute;
+  height: 100%;
+  align-items: stretch;
+}
+
+#headerMenuCol{
+  display: flex;
+  justify-content: flex-end;
+}
+
+#travelAlert{
+  display: flex;
+  height:30px;
+  padding: 4px 100px;
+  background: #cfd8dc;
+  font-family: "Noto Sans TC", sans-serif;
+  //font-family: "Oswald", sans-serif;
+  //justify-content: center;
+  align-items: center;
+  align-content: center;
+  //display: inline-block;
+  //line-height: 30px;
+}
+
+#alertIcon{
+  height: 25px;
+  align-self: center;
+  font-size: 20px;
+}
+
+#covidAlertText{
+  font-weight: bolder;
+  margin-right: 10px;
+  display: inline;
+}
+
+#greeting{
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: normal;
+}
+
+#mainPicHolder{
+  background-image: url("../../res/main_bg_2.png");
+  background-size: cover;
+  position: relative;
+}
+
+#schedulerWrap{
+  z-index: 10;
+  margin-top: -10rem;
+  margin-left: 50px;
+  margin-right: 50px;
+  border-radius: 5px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 30px;
+  background-color: rgba(255,255,255,0.8);
+}
+
+.schedulerField{
+  width: 25% !important;
+}
+
+.ant-select-selector{
+  height: 48px !important;
+  line-height: 45px !important;
+}
+
+.ant-select-selection-placeholder{
+  line-height: 45px !important;
+}
+

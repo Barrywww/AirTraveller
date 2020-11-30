@@ -2,10 +2,11 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-    entry: './src/bundle.js',
+    entry: './src/js/bundle.js',
     output: {
         filename: "bundle.js",
-        path: path.join(__dirname, 'public')
+        path: path.join(__dirname, 'public'),
+        publicPath: "/"
     },
     module: {
         rules: [{
@@ -54,7 +55,8 @@ module.exports = {
         open: true,
         hot: true,
         compress: true,
-        contentBase: path.join(__dirname, 'public')
+        contentBase: path.join(__dirname, 'public'),
+        historyApiFallback: true
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin()
