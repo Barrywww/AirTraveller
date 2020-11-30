@@ -1,17 +1,53 @@
 import React from 'react';
+import Cookies from "js-cookie";
 
-import {Layout, Menu, Breadcrumb, Row, Col, Button, Input, Dropdown, DatePicker} from 'antd';
-import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, DownOutlined, TeamOutlined, IdcardOutlined} from '@ant-design/icons';
-const {Content, Footer} = Layout;
+import {Breadcrumb, Button, Col, DatePicker, Dropdown, Form, Input, Layout, Menu, Row} from 'antd';
+import {
+    DownOutlined,
+    EyeInvisibleOutlined,
+    EyeTwoTone,
+    IdcardOutlined,
+    TeamOutlined,
+    UserOutlined
+} from '@ant-design/icons';
 import {MainHeader, TravelAlert} from "./bundle";
 
 import 'antd/dist/antd.compact.less'
 import '../css/registration.less'
 import {NavLink} from "react-router-dom";
 
+const {Content, Footer} = Layout;
+
 const userTypes = ["AirTraveller Club Member", "Booking Agent", "Airline Staff"];
 
 class RegistrationFields extends React.Component{
+    async regisClick (values){
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values)
+        };
+        let response;
+        if (this.state.regisType === userTypes[0]){
+            response = await fetch('http://localhost:3000/api/register/customer', requestOptions)
+        }
+        else if(this.state.regisType === userTypes[1]){
+            response = await fetch('http://localhost:3000/api/register/agent', requestOptions);
+        }
+        else if (this.state.regisType === userTypes[2]){
+            response = await fetch('http://localhost:3000/api/register/staff', requestOptions);
+        }
+        else{
+            alert("Registration Failed!");
+            return
+        }
+        if(response.status === 200 ){
+            alert('Registration Success');
+        }else{
+            alert("Registration Failed");
+        }
+    }
+
     constructor(props) {
         super(props);
         this.state = {regisType: undefined}
@@ -31,6 +67,28 @@ class RegistrationFields extends React.Component{
             buttonPlaceholder = this.state.regisType;
         }
 
+        const onFinish = values => {
+            console.log("on finish");
+            if (values["password"] !== values["confirmPassword"]){
+                alert("Please double check your password!");
+                return;
+            }
+            // console.log(values);
+            if (values["dateOfBirth"]) {
+                values["dateOfBirth"] = values["dateOfBirth"].format("YYYY-MM-DD");
+            }
+            if (values["passportExpiration"]) {
+                values["passportExpiration"] = values["passportExpiration"].format("YYYY-MM-DD");
+            }
+            console.log(values);
+            this.regisClick(values);
+        };
+
+        const onFinishFailed = errorInfo => {
+            alert("Please check the required fields!");
+        };
+
+
         const rTypes = (
             <Menu>
                 <Menu.Item key="1" icon={<UserOutlined />} onClick={this.handleRegisChange.bind(this, userTypes[0])}>
@@ -46,110 +104,241 @@ class RegistrationFields extends React.Component{
         );
 
         let field_user = (
-            <div>
+            <Form
+                name="basic"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="Name" />
+                        <Form.Item
+                            name="name"
+                            rules={[{ required: true, message: 'Please input your name!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Name" />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={12}>
-                        <DatePicker size="large" placeholder="Date of birth" style={{width:"100%"}}/>
+                        <Form.Item
+                            name="dateOfBirth"
+                            rules={[{ required: true, message: 'Please input your date of birth!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <DatePicker size="large" placeholder="Date of birth" style={{width:"100%"}}/>
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Input size="large" placeholder="Email address" style={{marginBottom: "10px"}} />
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
+                        <Form.Item
+                            name="email"
+                            rules={[{ required: true, message: 'Please input your email!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Email address" style={{marginBottom: "10px"}} />
+                        </Form.Item>
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
+                        </Form.Item>
+                        <Form.Item
+                            name="confirmPassword"
+                            rules={[{ required: true, message: 'Please confirm your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                        <Input size="large" placeholder="Phone number" style={{margin: "10px 0"}} />
+                        </Form.Item>
+                        <Form.Item
+                            name="phoneNumber"
+                            rules={[{ required: true, message: 'Please input your phone number!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Phone number" style={{margin: "10px 0"}} />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="Building No." />
+                        <Form.Item
+                            name="buildingNumber"
+                            rules={[{ required: true, message: 'Please input your building number!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Building No." />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="Street" />
+                        <Form.Item
+                            name="street"
+                            rules={[{ required: true, message: 'Please input street address!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Street" />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="City" />
+                        <Form.Item
+                            name="city"
+                            rules={[{ required: true, message: 'Please input city address!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="City" />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="State" />
+                        <Form.Item
+                            name="state"
+                            rules={[{ required: true, message: 'Please input state address!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="State" />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={8}>
-                        <Input size="large" placeholder="Passport No." />
+                        <Form.Item
+                            name="passportNumber"
+                            rules={[{ required: true, message: 'Please input your passport number!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Passport No." />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={8}>
-                        <Input size="large" placeholder="Passport country" />
+                        <Form.Item
+                            name="passportCountry"
+                            rules={[{ required: true, message: 'Please input your passport country!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Passport country" />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={8}>
-                        <DatePicker size="large" placeholder="Expiration" style={{width:"100%"}} />
+                        <Form.Item
+                            name="passportExpiration"
+                            rules={[{ required: true, message: 'Please input your passport expiration date!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <DatePicker size="large" placeholder="Expiration" style={{width:"100%"}} />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Button type="primary" size={"large"} style={{width:"100%"}}>Submit</Button>
+                        <Button type="primary" htmlType="submit" size={"large"} style={{width:"100%"}}>Submit</Button>
                     </Col>
                 </Row>
-            </div>
+            </Form>
     )
         let field_agent = (
-            <div>
+            <Form
+                name="basic"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Input size="large" placeholder="Email address" style={{marginBottom: "10px"}} />
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
+                        <Form.Item
+                            name="email"
+                            rules={[{ required: true, message: 'Please input your email!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Email address" style={{marginBottom: "10px"}} />
+                        </Form.Item>
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
+                        </Form.Item>
+                        <Form.Item
+                            name="confirmPassword"
+                            rules={[{ required: true, message: 'Please confirm your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Button type="primary" size={"large"} style={{width:"100%"}}>Submit</Button>
+                        <Button type="primary" htmlType="submit" size={"large"} style={{width:"100%"}}>Submit</Button>
                     </Col>
                 </Row>
-            </div>
+            </Form>
         )
         let field_staff = (
-            <div>
+            <Form
+                name="basic"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="First name" />
+                    <Form.Item
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!'}]}
+                        style={{width: "100%", margin:"0"}}>
+                        <Input size="large" placeholder="Username" style={{marginBottom: "10px"}} />
+                    </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
+                <Col className="gutter-row" span={12}>
+                        <Form.Item
+                            name="firstName"
+                            rules={[{ required: true, message: 'Please input your first name!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="First name" />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="Last name" />
+                        <Form.Item
+                            name="lastName"
+                            rules={[{ required: true, message: 'Please input your last name!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Last name" />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={12}>
-                        <Input size="large" placeholder="Airline name" />
+                        <Form.Item
+                            name="airlineName"
+                            rules={[{ required: true, message: 'Please input your airline name!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input size="large" placeholder="Airline name" />
+                        </Form.Item>
                     </Col>
                     <Col className="gutter-row" span={12}>
-                        <DatePicker size="large" placeholder="Date of birth" style={{width:"100%"}} />
+                        <Form.Item
+                            name="dateOfBirth"
+                            rules={[{ required: true, message: 'Please input your date of birth!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <DatePicker size="large" placeholder="Date of birth" style={{width:"100%"}} />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Input size="large" placeholder="Email address" style={{marginBottom: "10px"}} />
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder=" Password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                        <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
+                        </Form.Item>
+                        <Form.Item
+                            name="confirmPassword"
+                            rules={[{ required: true, message: 'Please confirm your password!'}]}
+                            style={{width: "100%", margin:"0"}}>
+                            <Input.Password size="large" style={{margin: "10px 0"}} placeholder="Confirm password"
                                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"10px 0", maxWidth: "100%"}}>
                     <Col className="gutter-row" span={24}>
-                        <Button type="primary" size={"large"} style={{width:"100%"}}>Submit</Button>
+                            <Button type="primary" htmlType="submit" size={"large"} style={{width:"100%"}}>Submit</Button>
                     </Col>
                 </Row>
-            </div>
+            </Form>
         )
         if (this.state.regisType === userTypes[0]){
             selectedField = field_user;
@@ -188,7 +377,7 @@ class RegistrationMain extends React.Component{
     render() {
         return(
             <div style={{padding: "0 100px"}}>
-                <Content style={{background:"#f0f2f5", maxWidth:"1400px", margin: "auto", width: "100%"}}>
+                <Content style={{background:"#f0f2f5", maxWidth:"1350px", margin: "auto", width: "100%"}}>
                     <Breadcrumb style={{margin: "14px 0"}}>
                         <Breadcrumb.Item>
                             <NavLink to="/">Home</NavLink>

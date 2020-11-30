@@ -1,14 +1,14 @@
-var mysql = require('mysql');
-var express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var path = require('path');
-var crypto = require('crypto')
+let mysql = require('mysql');
+let express = require('express');
+let session = require('express-session');
+let bodyParser = require('body-parser');
+let cookieParser = require('cookie-parser');
+let path = require('path');
+let crypto = require('crypto')
 
 
-var app = module.exports = express();
-var key = `3082N-t2983-[mIKi-rU42h-3roqe-idkxf-[239s&`
+let app = module.exports = express();
+let key = `3082N-t2983-[mIKi-rU42h-3roqe-idkxf-[239s&`
 
 app.use(session({
 	secret: 'secret', 
@@ -21,11 +21,11 @@ app.use(bodyParser.json());
 app.use(cookieParser())
 app.use(express.static('public'))
 
-var connection = mysql.createConnection({
+let connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
-	password : '',
-	database : 'nodelogin'
+	password : 'root',
+	database : 'ticket_system'
 });
 
 app.get('/api', (req, res) => res.send("CALL"));
@@ -44,7 +44,7 @@ app.post('/api/search/flight', (req, res) => {
 			if (results.length > 0) {
 				res.send(results);
 			} else {
-				res.send(404);
+				res.sendStatus(404);
 			}			
 		res.end();
 	});
@@ -64,7 +64,7 @@ app.post('/api/search/status', (req, res) => {
 			if (results.length > 0) {
 				res.send(results);
 			} else {
-				res.send(404);
+				res.sendStatus(404);
 			}			
 		res.end();
 	});
@@ -72,99 +72,105 @@ app.post('/api/search/status', (req, res) => {
 
 
 app.post('/api/register/customer', (req, res) => {
-	email = req.body.email;
-	name = req.body.name;
-	password = req.body.password;
-	buildingNumber = req.body.buildingNumber;
-	street = req.body.street;
-	city = req.body.city;
-	state = req.body.state;
-	phoneNumber = req.body.phoneNumber;
-	passportNumber = req.body.passportNumber;
-	passportExpiration = req.body.passportExpiration;
-	passportCountry = req.body.passportCountry;
-	dateOfBirth = req.body.dateOfBirth;
-	hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let email = req.body.email;
+	let name = req.body.name;
+	let password = req.body.password;
+	let buildingNumber = req.body.buildingNumber;
+	let street = req.body.street;
+	let city = req.body.city;
+	let state = req.body.state;
+	let phoneNumber = req.body.phoneNumber;
+	let passportNumber = req.body.passportNumber;
+	let passportExpiration = req.body.passportExpiration;
+	let passportCountry = req.body.passportCountry;
+	let dateOfBirth = req.body.dateOfBirth;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	console.log([email, name, hashPassword, buildingNumber, street, city, state, phoneNumber, passportNumber, passportExpiration, passportCountry, dateOfBirth]);
 	connection.query(
 		`INSERT INTO customer VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, 
 		[email, name, hashPassword, buildingNumber, street, city, state, phoneNumber, passportNumber, passportExpiration, passportCountry, dateOfBirth], 
 		function(error, results, fields) {
-			if (results.length > 0) {
-				res.send(200);
+			if (error) {
+				console.log(error);
+				res.sendStatus(500);
 			} else {
-				res.send(500);
+				res.sendStatus(200);
 			}			
 		res.end();
 	});
 });
 
 app.post('/api/register/agent', (req, res) => {
-	email = req.body.email;
-	id = req.body.id;
-	password = req.body.password;
-	hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let email = req.body.email;
+	// id = req.body.id;
+	let password = req.body.password;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
 	connection.query(
-		`INSERT INTO booking_agent VALUES (?,?)`, 
+		`INSERT INTO booking_agent(email, password) VALUES (?,?)`,
 		[email, hashPassword], 
 		function(error, results, fields) {
-			if (results.length > 0) {
-				res.send(200);
+			if (error) {
+				console.log(error);
+				res.sendStatus(500);
 			} else {
-				res.send(500);
+				res.sendStatus(200);
 			}			
 		res.end();
 	});
 });
 
 app.post('/api/register/staff', (req, res) => {
-	username = req.body.username;
-	firstName = req.body.firstName;
-	lastName = req.body.lastname;
-	password = req.body.password;
-	dateOfBirth = req.body.dateOfBirth;
-	airlineName = req.body.airlineName;
-	hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let username = req.body.username;
+	let firstName = req.body.firstName;
+	let lastName = req.body.lastName;
+	let password = req.body.password;
+	let dateOfBirth = req.body.dateOfBirth;
+	let airlineName = req.body.airlineName;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
 	connection.query(
 		`INSERT INTO airline_staff VALUES (?, ?, ?, ?, ?, ?)`, 
 		[username, firstName, lastName, hashPassword, dateOfBirth, airlineName], 
 		function(error, results, fields) {
-			if (results.length > 0) {
-				res.send(200);
-			} else {
+			if (error) {
+				console.log(error);
 				res.send(500);
+			} else {
+				res.send(200);
 			}			
 		res.end();
 	});
 });
 
 app.post('/api/login/customer', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
-	var hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let username = req.body.username;
+	let password = req.body.password;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	console.log(username, password);
 	if (username && password) {
 		connection.query(
-            'SELECT * FROM customer WHERE username = ? AND password = ?', 
-            [username, hashPassword], 
+            'SELECT * FROM customer WHERE email = ? AND password = ?',
+            [username, hashPassword],
             function(error, results, fields) {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.username = username; 
 					req.session.identity = "Customer";
+					res.sendStatus(200);
                 } else {
-                    res.send('Error');
+                    res.sendStatus(418);
 				}			
 			res.end();
 		});
 	} else {
-		res.send("Error");
+		res.sendStatus(418);
 		res.end();
 	}
 });
 
 app.post('/api/login/agent', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
-	var hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let username = req.body.username;
+	let password = req.body.password;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
 	if (username && password) {
 		connection.query(
             'SELECT * FROM booking_agent WHERE username = ? AND password = ?', 
@@ -186,9 +192,9 @@ app.post('/api/login/agent', (req, res) => {
 });
 
 app.post('/api/login/staff', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
-	var hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let username = req.body.username;
+	let password = req.body.password;
+	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
 	if (username && password) {
 		connection.query(
             'SELECT * FROM airline_staff WHERE username = ? AND password = ?', 
@@ -208,11 +214,5 @@ app.post('/api/login/staff', (req, res) => {
 		res.end();
 	}
 });
-
-
-
-
-
-
 
 app.listen(3000,  () => console.log("app listening on port 3000!"));

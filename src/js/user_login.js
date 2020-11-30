@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from "js-cookie";
 
 import { Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, Input, Checkbox, Form} from 'antd';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined} from '@ant-design/icons';
@@ -18,9 +19,29 @@ class LoginMain extends React.Component{
         document.title = 'Sign in | AirTraveller - Excited to fly.';
     }
 
+    async LoginClick (values){
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values)
+        };
+        console.log(requestOptions);
+        const response = await fetch('http://localhost:3000/api/login/customer', requestOptions);
+        console.log(response.status)        // this.setState({ postId: data.id });
+        if( response.status === 200 ){
+            alert('Login Success');
+            Cookies.set("isLoggedIn", "true");
+        }else if ( response.status === 418){
+            alert("Login Failed");
+        }
+
+
+    }
+
     render(){
         const onFinish = values => {
             console.log('Success:', values);
+            this.LoginClick(values);
         };
 
         const onFinishFailed = errorInfo => {
@@ -29,7 +50,7 @@ class LoginMain extends React.Component{
 
         return(
             <div style={{padding: "0 100px"}}>
-                <Content style={{background:"#f0f2f5", maxWidth:"1400px", margin: "auto", width: "100%"}}>
+                <Content style={{background:"#f0f2f5", maxWidth:"1350px", margin: "auto", width: "100%"}}>
                     <Breadcrumb style={{margin: "14px 0"}}>
                         <Breadcrumb.Item>
                             <NavLink to="/">Home</NavLink>
@@ -66,13 +87,13 @@ class LoginMain extends React.Component{
                                             <Form.Item
                                                 name="username"
                                                 rules={[{ required: true, message: 'Please input your username!' }]}
-                                                style={{width: "100%"}}>
+                                                style={{width: "100%", margin:"0"}}>
                                                 <Input size="large" placeholder=" Email" prefix={<UserOutlined />} style={{margin:"5px 0"}}/>
                                             </Form.Item>
                                             <Form.Item
                                                 name="password"
                                                 rules={[{ required: true, message: 'Please input your password!' }]}
-                                                style={{width: "100%"}}>
+                                                style={{width: "100%", margin:"0"}}>
                                                 <Input.Password size="large" style={{margin:"10px 0"}} prefix={<LockOutlined />}
                                                     placeholder=" Password"
                                                     iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
@@ -81,7 +102,7 @@ class LoginMain extends React.Component{
                                             <Checkbox onChange={onChange}>Remember me</Checkbox>
                                         </Row>
                                         <Row style={{marginTop:"10px"}}>
-                                            <Form.Item style={{width: "100%"}}>
+                                            <Form.Item style={{width: "100%", margin:"0"}}>
                                             <Button type="primary" htmlType="submit" style={{margin:"auto", width:"100%", height:"45px", fontSize:"1.1rem"}}>Login</Button>
                                             </Form.Item>
                                         </Row>

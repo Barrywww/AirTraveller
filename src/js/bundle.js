@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Cookies from "js-cookie";
 import {BrowserRouter, Route, Switch, NavLink} from 'react-router-dom';
 
 import { Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, AutoComplete, DatePicker} from 'antd';
@@ -127,7 +128,7 @@ class MainContent extends React.Component{
     render(){
         return(
             <div style={{padding: "0 100px"}}>
-                <Content style={{background:"#f0f2f5", maxWidth:"1400px", margin: "auto", width: "100%"}}>
+                <Content style={{background:"#f0f2f5", maxWidth:"1350px", margin: "auto", width: "100%"}}>
                     <Divider />
                     <Layout className="site-layout-background">
                         <Content style={{minHeight: 280 }}>
@@ -155,7 +156,7 @@ class MainHeader extends React.Component{
     render() {
         return (
             <Header className={"header"} style={{padding: "0 100px"}}>
-                <Row style={{maxWidth: "1400px", margin: "auto"}}>
+                <Row style={{maxWidth: "1350px", margin: "auto"}}>
                     <Col flex={1}>
                         {/*<div id="logo"></div>*/}
                         <NavLink to="/">
@@ -195,7 +196,7 @@ class TravelAlert extends React.Component{
     render() {
         return(
             <Row justify="start" id="travelAlert" >
-                <div style={{maxWidth: "1400px", width:"100%", margin: "auto"}}>
+                <div style={{maxWidth: "1350px", width:"100%", margin: "auto"}}>
                     <AlertTwoTone twoToneColor="#d32f2f" style={{fontSize: "20px", float:"left"}}/>
                     <div style={{marginLeft: "5px", fontSize: "15px", float: "left"}}>
                         <div id="covidAlertText">COVID-19 Travel Alert:</div>
