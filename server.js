@@ -265,7 +265,7 @@ app.post('/api/customer/purchase', (req, res) => {
 });
 
 
-app.post('/api/customer/spend', (req, res) => {
+app.post('/api/customer/bill', (req, res) => {
 	if(req.session.loggedin == True && req.session.identity == "Customer"){
 		let email = req.body.email;
 		connection.query(
@@ -303,7 +303,15 @@ app.post('/api/customer/logout', (req, res) => {
 });
 
 
-
+app.post('/api/agent/flight', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Customer"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
 
 
 
