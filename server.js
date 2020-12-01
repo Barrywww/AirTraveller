@@ -340,16 +340,16 @@ app.post('/api/agent/purchase', (req, res) => {
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
-					res.send(500);
+					res.sendStatus(500);
 				}
 				else{
-					res.send(200);
+					res.sendStatus(200);
 				}
 			}
 		);
 	}
 	else{
-		res.send(300);
+		res.sendStatus(300);
 	}
 });
 
@@ -365,7 +365,7 @@ app.post('/api/agent/commission', (req, res) => {
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
-					res.send(500);
+					res.sendStatus(500);
 				}
 				else{
 					res.send(results);
@@ -374,7 +374,7 @@ app.post('/api/agent/commission', (req, res) => {
 		);
 	}
 	else{
-		res.send(300);
+		res.sendStatus(300);
 	}
 });
 
@@ -383,7 +383,7 @@ app.post('/api/agent/fathers', (req, res) => {
 	
 	}
 	else{
-		res.send(300);
+		res.sendStatus(300);
 	}
 });
 
