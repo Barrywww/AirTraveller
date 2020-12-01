@@ -40,7 +40,7 @@ app.post('/api/search/flight', (req, res) => {
 			AND arrival_airport = ?
 			AND DATE_FORMAT(departure_time, %y, %m, %d) = ?`, 
 		[srcaptName, dstaptName, date], 
-		function(error, results, fields) {
+		(error, results, fields) => {
 			if (results.length > 0) {
 				res.send(results);
 			} else {
@@ -60,7 +60,7 @@ app.post('/api/search/status', (req, res) => {
 			AND DATE_FORMAT(departure_time, %y, %m, %d) = ?
 			AND DATE_FORMAT(arrival_time, %y, %m, %d) = ?`, 
 		[flightNumber, departureDate, arrivalDate], 
-		function(error, results, fields) {
+		(error, results, fields) => {
 			if (results.length > 0) {
 				res.send(results);
 			} else {
@@ -89,7 +89,7 @@ app.post('/api/register/customer', (req, res) => {
 	connection.query(
 		`INSERT INTO customer VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, 
 		[email, name, hashPassword, buildingNumber, street, city, state, phoneNumber, passportNumber, passportExpiration, passportCountry, dateOfBirth], 
-		function(error, results, fields) {
+		(error, results, fields) => {
 			if (error) {
 				console.log(error);
 				res.sendStatus(500);
@@ -102,13 +102,12 @@ app.post('/api/register/customer', (req, res) => {
 
 app.post('/api/register/agent', (req, res) => {
 	let email = req.body.email;
-	// id = req.body.id;
 	let password = req.body.password;
 	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
 	connection.query(
 		`INSERT INTO booking_agent(email, password) VALUES (?,?)`,
 		[email, hashPassword], 
-		function(error, results, fields) {
+		(error, results, fields) => {
 			if (error) {
 				console.log(error);
 				res.sendStatus(500);
@@ -130,7 +129,7 @@ app.post('/api/register/staff', (req, res) => {
 	connection.query(
 		`INSERT INTO airline_staff VALUES (?, ?, ?, ?, ?, ?)`, 
 		[username, firstName, lastName, hashPassword, dateOfBirth, airlineName], 
-		function(error, results, fields) {
+		(error, results, fields) => {
 			if (error) {
 				console.log(error);
 				res.send(500);
@@ -150,7 +149,7 @@ app.post('/api/login/customer', (req, res) => {
 		connection.query(
             'SELECT * FROM customer WHERE email = ? AND password = ?',
             [username, hashPassword],
-            function(error, results, fields) {
+            (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.username = username; 
@@ -175,18 +174,18 @@ app.post('/api/login/agent', (req, res) => {
 		connection.query(
             'SELECT * FROM booking_agent WHERE username = ? AND password = ?', 
             [username, hashPassword], 
-            function(error, results, fields) {
+            (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.username = username; 
 					req.session.identity = "Booking Agent";
                 } else {
-                    res.send('Error');
+                    res.send(418);
 				}			
 			res.end();
 		});
 	} else {
-		res.send("Error");
+		res.send(418);
 		res.end();
 	}
 });
@@ -199,20 +198,114 @@ app.post('/api/login/staff', (req, res) => {
 		connection.query(
             'SELECT * FROM airline_staff WHERE username = ? AND password = ?', 
             [username, hashPassword], 
-            function(error, results, fields) {
+            (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.username = username; 
 					req.session.identity = "Airline Staff";
                 } else {
-                    res.send('Error');
+                    res.send(418);
 				}			
 			res.end();
 		});
 	} else {
-		res.send("Error");
+		res.send(418);
 		res.end();
 	}
 });
+
+app.post('/api/customer/flights', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Customer"){
+		let email = req.body.email;
+		connection.query(
+			`SELECT * FROM customer, purchases, ticket, flight
+			WHERE customer.email = purchases.customer_email 
+			AND purchases.ticket_id = ticket.ticket_id
+			AND ticket.airline_name = flight.airline_name
+			AND ticket.flight_num = flight.flight_num
+			AND customer.email = ?`,
+			[email],
+			(error, results, fields) => {
+				res.send(results); 
+				res.end();
+			}
+		);
+	}
+	else{
+		res.send(300);
+	}
+});
+
+
+app.post('/api/customer/purchase', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Customer"){
+		let email = req.body.email;
+		let flightNum = req.body.flightNum;
+		let airlineName = req.body.airlineName;
+		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'') ;
+		let id = crypto.createHmac('sha1', key).update(email + date).digest('hex');
+		connection.query(
+			`INSERT INTO ticket VALUES(?,?,?);
+			INSERT INTO purchases VALUES(?,?,?,?);`,
+			[id, airlineName, flightNum, id, email, null, date],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(200);
+				}
+			}
+		);
+	}
+	else{
+		res.send(300);
+	}
+});
+
+
+app.post('/api/customer/spend', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Customer"){
+		let email = req.body.email;
+		connection.query(
+			`SELECT purchases.purchase_date, flight.price FROM purchases, ticket, flight
+			WHERE purchases.ticket_id = ticket.ticket_id
+			AND ticket.airline_name = flight.airline_name
+			AND ticket.flight_num = flight.flight_num
+			AND purchases.customer_email = ?;`,
+			[email],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+
+app.post('/api/customer/logout', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Customer"){
+		req.session.destroy();
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+
+
+
+
+
 
 app.listen(3000,  () => console.log("app listening on port 3000!"));
