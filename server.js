@@ -304,14 +304,104 @@ app.post('/api/customer/logout', (req, res) => {
 
 
 app.post('/api/agent/flight', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Customer"){
-		
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+		let agentID = req.body.agentID;
+		connection.query(
+			`SELECT * FROM customer, purchases, ticket, flight
+			WHERE customer.email = purchases.customer_email 
+			AND purchases.ticket_id = ticket.ticket_id
+			AND ticket.airline_name = flight.airline_name
+			AND ticket.flight_num = flight.flight_num
+			AND purchases.booking_agent_id = ?`,
+			[agentID],
+			(error, results, fields) => {
+				res.send(results); 
+				res.end();
+			}
+		);
+	}
+	else{
+		res.send(300);
+	}
+});
+
+app.post('/api/agent/purchase', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+		let agentID = req.body.agentID;
+		let email = req.body.email;
+		let flightNum = req.body.flightNum;
+		let airlineName = req.body.airlineName;
+		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		let id = crypto.createHmac('sha1', key).update(email + date).digest('hex');
+		connection.query(
+			`INSERT INTO ticket VALUES(?,?,?);
+			INSERT INTO purchases VALUES(?,?,?,?);`,
+			[id, airlineName, flightNum, id, email, agentID, date],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(200);
+				}
+			}
+		);
+	}
+	else{
+		res.send(300);
+	}
+});
+
+
+app.post('/api/agent/commission', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+		let agentID = req.body.agentID;
+		let start = req.body.start;
+		let end = req.body.end;
+		connection.query(
+			``,
+			[agentID, start, end],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
+	}
+	else{
+		res.send(300);
+	}
+});
+
+app.post('/api/agent/fathers', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	
+	}
+	else{
+		res.send(300);
+	}
+});
+
+
+
+app.post('/api/agent/logout', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+		req.session.destroy();
 		res.sendStatus(200);
 	}
 	else{
 		res.sendStatus(300);
 	}
 });
+
+
+
+
 
 
 
