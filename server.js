@@ -409,27 +409,28 @@ app.post('/api/agent/fathers', (req, res) => {
 });
 
 app.post('/api/agent/mothers', (req, res) => {
-	let agentID = req.body.agentID;
-	let start = req.body.start;
-	let end = req.body.end;
-	connection.query(
-		`SELECT SUM(PRICE), customer_email FROM purchases
-		ORDER BY SUM(PRICE) DESC LIMIT 5
-		WHERE booking_agent_id = ? 
-		AND (purchase_date BETWEEN ? AND ?)
-		GROUP BY custmoer_email;`,
-		[agentID, start, end],
-		(error, results, fields) => {
-			if(error){
-				console.log(error);
-				res.sendStatus(500);
+	if(req.session.loggedin == True && req.session.identity == "Agent"){
+		let agentID = req.body.agentID;
+		let start = req.body.start;
+		let end = req.body.end;
+		connection.query(
+			`SELECT SUM(PRICE), customer_email FROM purchases
+			ORDER BY SUM(PRICE) DESC LIMIT 5
+			WHERE booking_agent_id = ? 
+			AND (purchase_date BETWEEN ? AND ?)
+			GROUP BY custmoer_email;`,
+			[agentID, start, end],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.send(results);
+				}
 			}
-			else{
-				res.send(results);
-			}
-		}
-	);
-}
+		);
+	}
 	else{
 		res.sendStatus(300);
 	}
