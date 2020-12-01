@@ -360,7 +360,9 @@ app.post('/api/agent/commission', (req, res) => {
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
-			``,
+			`SELECT price, purchase_date FROM purchases NATRAL JOIN ticket NATRAL JOIN flight
+			WHERE booking_agent_id = ?
+			AND (purchase_date BETWEEN ? AND ?);`,
 			[agentID, start, end],
 			(error, results, fields) => {
 				if(error){
@@ -380,14 +382,58 @@ app.post('/api/agent/commission', (req, res) => {
 
 app.post('/api/agent/fathers', (req, res) => {
 	if(req.session.loggedin == True && req.session.identity == "Agent"){
-	
+		let agentID = req.body.agentID;
+		let start = req.body.start;
+		let end = req.body.end;
+		connection.query(
+			`SELECT COUNT(ticket_id), customer_email FROM purchases
+			ORDER BY COUNT(ticket_id) DESC LIMIT 5
+			WHERE booking_agent_id = ? 
+			AND (purchase_date BETWEEN ? AND ?)
+			GROUP BY custmoer_email;`,
+			[agentID, start, end],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
 	}
 });
 
-
+app.post('/api/agent/mothers', (req, res) => {
+	let agentID = req.body.agentID;
+	let start = req.body.start;
+	let end = req.body.end;
+	connection.query(
+		`SELECT SUM(PRICE), customer_email FROM purchases
+		ORDER BY SUM(PRICE) DESC LIMIT 5
+		WHERE booking_agent_id = ? 
+		AND (purchase_date BETWEEN ? AND ?)
+		GROUP BY custmoer_email;`,
+		[agentID, start, end],
+		(error, results, fields) => {
+			if(error){
+				console.log(error);
+				res.sendStatus(500);
+			}
+			else{
+				res.send(results);
+			}
+		}
+	);
+}
+	else{
+		res.sendStatus(300);
+	}
+});
 
 app.post('/api/agent/logout', (req, res) => {
 	if(req.session.loggedin == True && req.session.identity == "Agent"){
