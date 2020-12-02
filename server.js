@@ -447,8 +447,27 @@ app.post('/api/agent/logout', (req, res) => {
 });
 
 
+app.post('/api/staff/flights', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Staff"){
+
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
 
 
+
+
+app.post('/api/staff/logout', (req, res) => {
+	if(req.session.loggedin == True && req.session.identity == "Staff"){
+		req.session.destroy();
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
 
 
 
