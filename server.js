@@ -24,7 +24,7 @@ app.use(express.static('public'))
 let connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
-	password : 'root',
+	password : '__EastWind',
 	database : 'ticket_system'
 });
 
@@ -38,7 +38,7 @@ app.post('/api/search/flight', (req, res) => {
 		`SELECT * FROM flight 
 			WHERE departure_airport = ?
 			AND arrival_airport = ?
-			AND DATE_FORMAT(departure_time, %y, %m, %d) = ?`, 
+			AND departure_time = ?`, 
 		[srcaptName, dstaptName, date], 
 		(error, results, fields) => {
 			if (results.length > 0) {
@@ -57,8 +57,8 @@ app.post('/api/search/status', (req, res) => {
 	connection.query(
 		`SELECT * FROM flight 
 			WHERE flight_num = ?
-			AND DATE_FORMAT(departure_time, "%y-%m-%d") = ?
-			AND DATE_FORMAT(arrival_time, "%y-%m-%d") = ?`, 
+			AND departure_time = ?
+			AND arrival_time = ?`, 
 		[flightNumber, departureDate, arrivalDate], 
 		(error, results, fields) => {
 			if (results.length > 0) {
@@ -360,7 +360,7 @@ app.post('/api/agent/commission', (req, res) => {
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
-			`SELECT price, purchase_date FROM purchases NATRAL JOIN ticket NATRAL JOIN flight
+			`SELECT price, purchase_date FROM purchases NATRUAL JOIN ticket NATRUAL JOIN flight
 			WHERE booking_agent_id = ?
 			AND (purchase_date BETWEEN ? AND ?);`,
 			[agentID, start, end],
@@ -449,7 +449,7 @@ app.post('/api/agent/logout', (req, res) => {
 
 app.post('/api/staff/flights', (req, res) => {
 	if(req.session.loggedin == True && req.session.identity == "Staff"){
-
+			
 	}
 	else{
 		res.sendStatus(300);
