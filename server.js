@@ -414,8 +414,8 @@ app.post('/api/agent/mothers', (req, res) => {
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
-			`SELECT SUM(PRICE), customer_email FROM purchases
-			ORDER BY SUM(PRICE) DESC LIMIT 5
+			`SELECT SUM(price), customer_email FROM purchases
+			ORDER BY SUM(price) DESC LIMIT 5
 			WHERE booking_agent_id = ? 
 			AND (purchase_date BETWEEN ? AND ?)
 			GROUP BY custmoer_email;`,
