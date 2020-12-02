@@ -57,8 +57,8 @@ app.post('/api/search/status', (req, res) => {
 	connection.query(
 		`SELECT * FROM flight 
 			WHERE flight_num = ?
-			AND DATE_FORMAT(departure_time, %y, %m, %d) = ?
-			AND DATE_FORMAT(arrival_time, %y, %m, %d) = ?`, 
+			AND DATE_FORMAT(departure_time, "%y-%m-%d") = ?
+			AND DATE_FORMAT(arrival_time, "%y-%m-%d") = ?`, 
 		[flightNumber, departureDate, arrivalDate], 
 		(error, results, fields) => {
 			if (results.length > 0) {
