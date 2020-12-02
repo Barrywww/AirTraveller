@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Cookies from "js-cookie";
-import {BrowserRouter, Route, Switch, NavLink} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, NavLink, useHistory} from 'react-router-dom';
 
-import { Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, AutoComplete, DatePicker} from 'antd';
+import {Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, AutoComplete, DatePicker, Form} from 'antd';
 import { UserOutlined, LaptopOutlined, NotificationOutlined, SearchOutlined, AlertTwoTone } from '@ant-design/icons';
 
 import 'antd/dist/antd.compact.less'
@@ -13,47 +13,21 @@ import Logo from '../../res/logo_2.png';
 import airports from "./airports";
 import LoginPage from "./user_login";
 import RegistrationPage from "./user_registration";
+import AdminRouter from "./admin";
+import AgentPage from "./agent";
+// import StaffPage from "./staff";
+// import UserHome from "./user_home";
 
+// const history = useHistory();
 const domesticAirports = airports["domestic"];
 const internationalAirports = airports["international"];
-
-console.log(domesticAirports);
 
 const { Title } = Typography;
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
 
-function MainSider(props){
-    return(
-        <Sider className="site-layout-background" width={200}>
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
-                style={{ height: '100%' }}
-            >
-                <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1">
-                    <Menu.Item key="1">option1</Menu.Item>
-                    <Menu.Item key="2">option2</Menu.Item>
-                    <Menu.Item key="3">option3</Menu.Item>
-                    <Menu.Item key="4">option4</Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
-                    <Menu.Item key="5">option5</Menu.Item>
-                    <Menu.Item key="6">option6</Menu.Item>
-                    <Menu.Item key="7">option7</Menu.Item>
-                    <Menu.Item key="8">option8</Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub3" icon={<NotificationOutlined />} title="subnav 3">
-                    <Menu.Item key="9">option9</Menu.Item>
-                    <Menu.Item key="10">option10</Menu.Item>
-                    <Menu.Item key="11">option11</Menu.Item>
-                    <Menu.Item key="12">option12</Menu.Item>
-                </SubMenu>
-            </Menu>
-        </Sider>
-    )
-}
+const IATARegex = /[A-Z]{3}/gm;
+const IATARegex_brackets = /[(][A-Z]{3}[)]/gm;
 
 class FieldAutoComplete extends React.Component {
     constructor(props) {
@@ -93,28 +67,70 @@ class MainScheduler extends React.Component {
         super(props);
     }
 
+    async homeQueryClick (values){
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values)
+        };
+        values["date"] = values["date"].format("YYYY-MM-DD");
+        values["srcaptName"]
+        let response;
+        if (this.state.regisType === userTypes[0]){
+            response = await fetch('http://localhost:3000/api/register/customer', requestOptions)
+        }
+    }
+
     render(){
+        const onFinish = values => {
+            console.log("on finish");
+        }
+
+        const onFinishFailed = errMsg => {
+            console.log("on finish failed");
+        }
         return(
             <div id="schedulerWrap">
                 <Title level={4} style={{ padding: '10px 35px', margin: "0 auto", fontWeight:"bold" }} id="greeting">
                     Ready for your next trip? Book with us now.
                 </Title>
-                <Row justify="space-between">
-                    <Col className="schedulerField" style={{textAlign:"start"}} span={6} xs={{ order: 1 }} sm={{ order: 1 }} md={{ order: 1 }} lg={{ order: 1 }}>
-                        <FieldAutoComplete options={domesticAirports} placeHolder="Leaving from" marginLeft="35px"/>
-                    </Col>
-                    <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 2 }} sm={{ order: 2 }} md={{ order: 2 }} lg={{ order: 2 }}>
-                        <FieldAutoComplete options={domesticAirports} placeHolder="Going to"/>
-                    </Col>
-                    <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 3 }} sm={{ order: 3 }} md={{ order: 3 }} lg={{ order: 3 }}>
-                        <DatePicker size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px"}} placeholder="Departing on"/>
-                    </Col>
-                    <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 4 }} sm={{ order: 4 }} md={{ order: 4 }} lg={{ order: 4 }}>
-                        <Button type="primary" size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px", overflow: "hidden"}}>
-                            → Search Flights
-                        </Button>
-                    </Col>
-                </Row>
+                <Form
+                    name="basic"
+                    initialValues={{ remember: true }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}>
+                    <Row justify="space-between">
+                            <Col className="schedulerField" style={{textAlign:"start"}} span={6} xs={{ order: 1 }} sm={{ order: 1 }} md={{ order: 1 }} lg={{ order: 1 }}>
+                                <Form.Item
+                                    name="srcaptName"
+                                    rules={[{ required: true, message: 'Please input your departure airport!'}]}
+                                    style={{width: "100%", margin:"0"}}>
+                                    <FieldAutoComplete options={domesticAirports} placeHolder="Leaving from" marginLeft="35px"/>
+                                </Form.Item>
+                            </Col>
+                            <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 2 }} sm={{ order: 2 }} md={{ order: 2 }} lg={{ order: 2 }}>
+                                <Form.Item
+                                    name="dstaptName"
+                                    rules={[{ required: true, message: 'Please input your arrival airport!'}]}
+                                    style={{width: "100%", margin:"0"}}>
+                                    <FieldAutoComplete options={domesticAirports} placeHolder="Going to"/>
+                                </Form.Item>
+                            </Col>
+                            <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 3 }} sm={{ order: 3 }} md={{ order: 3 }} lg={{ order: 3 }}>
+                                <Form.Item
+                                    name="date"
+                                    rules={[{ required: true, message: 'Please input your departure date!'}]}
+                                    style={{width: "100%", margin:"0"}}>
+                                    <DatePicker size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px"}} placeholder="Departing on"/>
+                                </Form.Item>
+                            </Col>
+                            <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 4 }} sm={{ order: 4 }} md={{ order: 4 }} lg={{ order: 4 }}>
+                                <Button type="primary" htmlType="submit" size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px", overflow: "hidden"}}>
+                                    → Search Flights
+                                </Button>
+                            </Col>
+                    </Row>
+                </Form>
             </div>
         )
     }
@@ -239,6 +255,9 @@ class MainRouter extends React.Component{
                     <Route exact path="/" component={HomePage} />
                     <Route path="/login" component={LoginPage} />
                     <Route path="/registration" component={RegistrationPage}/>
+                    <Route path="/admin" component={AdminRouter}/>
+                    {/*<Route path="/admin/staff" component={StaffPage}/>*/}
+                    {/*<Route path="/user/home" component={UserHome}/>*/}
                 </Switch>
             </BrowserRouter>
         );
