@@ -492,7 +492,7 @@ app.post('/api/staff/flights', (req, res) => {
 	}
 });
 
-app.post('/api/staff/customers', (req, res) => {
+app.post('/api/staff/customers-flight', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
 		let username = req.body.username;
 		let flightNum = req.body.flightNum;
@@ -521,7 +521,7 @@ app.post('/api/staff/customers', (req, res) => {
 });
 
 
-app.post('/api/staff/create', (req, res) => {
+app.post('/api/staff/addFlight', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
 		let airlineName = req.body.airlineName;
 		let flightNum = req.body.flightNum;
@@ -554,7 +554,49 @@ app.post('/api/staff/create', (req, res) => {
 
 app.post('/api/staff/changeStatus', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		
+		let status = req.body.status;
+		let airlineName = req.body.airlineName;
+		let flightNum = req.body.flightNum;
+		connection.query(
+			`UPDATE flight SET status = ?
+			WHERE airline_name = ?
+			AND flight_num = ?;`,
+			[status, airlineName, flightNum],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.sendStatus(200);
+				}
+			}
+		);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/addPlane', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let airlineName = req.body.airlineName;
+  		let airplaneID = req.body.airplaneID;
+  		let seats = req.body.seats;
+
+		connection.query(
+			`INSERT INTO airplane VALUES(?,?,?)`,
+			[airlineName, airplaneID, seats],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.sendStatus(200);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
@@ -562,7 +604,80 @@ app.post('/api/staff/changeStatus', (req, res) => {
 });
 
 
+app.post('/api/staff/addAirport', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let airportName = req.body.airportName;
+		let airportCity = req.body.airportCity;
 
+		connection.query(
+			`INSERT INTO airport VALUES(?,?,?)`,
+			[airportName, airportCity],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.sendStatus(200);
+				}
+			}
+		);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+
+app.post('/api/staff/agents', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/freqCustomers', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/reports', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/revenue', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/topDest', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		
+		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
 
 app.post('/api/staff/logout', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
