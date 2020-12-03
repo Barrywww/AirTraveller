@@ -305,15 +305,16 @@ app.post('/api/customer/logout', (req, res) => {
 
 app.post('/api/agent/flight', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let agentID = req.body.agentID;
+		let email = req.body.email;
 		connection.query(
-			`SELECT * FROM customer, purchases, ticket, flight
+			`SELECT * FROM customer, purchases, ticket, flight, booking_agent
 			WHERE customer.email = purchases.customer_email 
 			AND purchases.ticket_id = ticket.ticket_id
 			AND ticket.airline_name = flight.airline_name
 			AND ticket.flight_num = flight.flight_num
-			AND purchases.booking_agent_id = ?`,
-			[agentID],
+			AND purchases.booking_agent_id = booking_agent.booking_agent_id
+			AND booking_agent.email = ?`,
+			[email],
 			(error, results, fields) => {
 				res.send(results); 
 				res.end();
@@ -449,7 +450,24 @@ app.post('/api/agent/logout', (req, res) => {
 
 app.post('/api/staff/flights', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-			
+		let username = req.body.username;
+		let start = req.body.start;
+		let end = req.body.end;
+		connection.query(
+			`SELECT * FROM airline_staff NATURAL JOIN airline NATURAL JOIN flight
+			WHERE airline_staff.username = ?
+			AND `,
+			[username, start, end],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
