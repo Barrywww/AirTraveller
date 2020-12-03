@@ -36,10 +36,11 @@ class AgentPage extends React.Component{
         else{
             let checkOptions = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     email: Cookies.get("adminID")
-                })
+                }),
+                credentials: "include"
             }
             console.log()
             let loginCheckResponse = await fetch('http://localhost:3000/api/agent/flight', checkOptions);
@@ -47,6 +48,10 @@ class AgentPage extends React.Component{
             if (loginCheckResponse.status !== 200){
                 await alert("User authentication failed, please login again!");
                 this.props.history.push('/admin')
+            }
+            else{
+                let loginChkResponse_json = loginCheckResponse.json();
+                console.log(loginChkResponse_json);
             }
         }
     }

@@ -16,8 +16,9 @@ class LoginPage extends React.Component{
         values["email"] = values["username"];
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values)
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(values),
+            credentials: "include"
         };
         values["email"] = values["username"];
         let response;
