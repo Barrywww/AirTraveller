@@ -177,7 +177,7 @@ app.post('/api/login/agent', (req, res) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.email = email; 
-					req.session.identity = "Booking Agent";
+					req.session.identity = "Agent";
                 } else {
                     res.send(418);
 				}			
@@ -508,11 +508,7 @@ app.post('/api/staff/create', (req, res) => {
 		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
 		connection.query(
-			`SELECT customer.email, customer.name, customer.phone_number 
-			FROM airline_staff NATURAL JOIN airline NATURAL JOIN flight NATURAL JOIN ticket NATURAL JOIN purchases NATURAL JOIN customer
-			WHERE airline_staff.username = ?
-			AND flight.flight_num = ?
-			AND flight.airline_name = ?`,
+			``,
 			[username, flightNum, airlineName],
 			(error, results, fields) => {
 				if(error){
