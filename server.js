@@ -141,18 +141,17 @@ app.post('/api/register/staff', (req, res) => {
 });
 
 app.post('/api/login/customer', (req, res) => {
-	let username = req.body.username;
+	let email = req.body.email;
 	let password = req.body.password;
 	let hashPassword = crypto.createHash('md5').update(password).digest('hex')
-	console.log(username, password);
-	if (username && password) {
+	if (email && password) {
 		connection.query(
             'SELECT * FROM customer WHERE email = ? AND password = ?',
-            [username, hashPassword],
+            [email, hashPassword],
             (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
-					req.session.username = username; 
+					req.session.email = email; 
 					req.session.identity = "Customer";
 					res.sendStatus(200);
                 } else {
