@@ -11,12 +11,13 @@ const { MemoryStore } = require('express-session');
 let app = module.exports = express();
 let key = `3082N-t2983-[mIKi-rU42h-3roqe-idkxf-[239s&`
 
+var MemoryStore =session.MemoryStore;
 app.use(session({
 	secret: 'secret', 
 	resave: true,
     saveUninitialized: true,
 	cookie: {secure: false, sameSite: false},
-	store: new MemoryStore
+	store: new MemoryStore()
 }));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
