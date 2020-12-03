@@ -178,13 +178,14 @@ app.post('/api/login/agent', (req, res) => {
                     req.session.loggedin = true;
 					req.session.email = email; 
 					req.session.identity = "Agent";
+					res.sendStatus(200);
                 } else {
-                    res.send(418);
+                    res.sendStatus(418);
 				}			
 			res.end();
 		});
 	} else {
-		res.send(418);
+		res.sendStatus(418);
 		res.end();
 	}
 });
