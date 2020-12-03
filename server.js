@@ -167,17 +167,17 @@ app.post('/api/login/customer', (req, res) => {
 });
 
 app.post('/api/login/agent', (req, res) => {
-	let username = req.body.username;
+	let email = req.body.email;
 	let password = req.body.password;
 	let hashPassword = crypto.createHash('md5').update(password).digest('hex')
-	if (username && password) {
+	if (email && password) {
 		connection.query(
-            'SELECT * FROM booking_agent WHERE username = ? AND password = ?', 
-            [username, hashPassword], 
+            'SELECT * FROM booking_agent WHERE email = ? AND password = ?', 
+            [email, hashPassword], 
             (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
-					req.session.username = username; 
+					req.session.email = email; 
 					req.session.identity = "Booking Agent";
                 } else {
                     res.send(418);
