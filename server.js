@@ -401,15 +401,15 @@ app.post('/api/agent/commission', (req, res) => {
 
 app.post('/api/agent/fathers', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let email = req.body.email;
+		let email = req.session.email;
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
 			`SELECT COUNT(ticket_id), customer_email FROM purchases NATURAL JOIN booking_agent
-			ORDER BY COUNT(ticket_id) DESC LIMIT 5
 			WHERE booking_agent.email = ? 
 			AND (purchase_date BETWEEN ? AND ?)
-			GROUP BY customer_email;`,
+			GROUP BY customer_email
+			ORDER BY COUNT(ticket_id) DESC LIMIT 5;`,
 			[email, start, end],
 			(error, results, fields) => {
 				if(error){
@@ -434,10 +434,10 @@ app.post('/api/agent/mothers', (req, res) => {
 		let end = req.body.end;
 		connection.query(
 			`SELECT SUM(price), customer_email FROM purchases NATURAL JOIN booking_agent
-			ORDER BY SUM(price) DESC LIMIT 5
 			WHERE booking_agent.email = ?
 			AND (purchase_date BETWEEN ? AND ?)
-			GROUP BY customer_email;`,
+			GROUP BY customer_email
+			ORDER BY SUM(price) DESC LIMIT 5;`,
 			[agentID, start, end],
 			(error, results, fields) => {
 				if(error){
