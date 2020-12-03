@@ -629,7 +629,54 @@ app.post('/api/staff/addAirport', (req, res) => {
 });
 
 
-app.post('/api/staff/agents', (req, res) => {
+app.post('/api/staff/agentsOnSales', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let date = new Date();
+		let pastmonth = date.setDate(date.getDate - 30);
+		let pastyear = date.setDate(date.getDate - 365);
+		let datestring = date.toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		let pastmonthstring = pastmonth.toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		let pastyearstring = pastyear.toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		connection.query(
+			`SELECT COUNT(ticket_id), booking_agent_id, booking_agent.email FROM booking_agent NATURAL JOIN purchases 
+			WHERE purchase_date BETWEEN ? AND ?
+			GROUP BY booking_agent_id
+			ORDER BY COUNT(ticket_id) DESC LIMIT 5;`,
+			[pastmonthstring, datestring],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					//
+				}
+			}
+		);
+		connection.query(
+			`SELECT COUNT(ticket_id), booking_agent_id, booking_agent.email FROM booking_agent NATURAL JOIN purchases
+			WHERE purchase_date BETWEEN ? AND ?
+			GROUP BY booking_agent_id
+			ORDER BY COUNT(ticket_id) DESC LIMIT 5 ;`,
+			[pastyearstring, datestring],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.sendStatus(200);
+				}
+			}
+		);
+		
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/agentsOnCommissions', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
 		
 		res.sendStatus(200);
