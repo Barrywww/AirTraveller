@@ -4,7 +4,8 @@ let session = require('express-session');
 let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
 let path = require('path');
-let crypto = require('crypto')
+let crypto = require('crypto');
+const { MemoryStore } = require('express-session');
 
 
 let app = module.exports = express();
@@ -14,7 +15,8 @@ app.use(session({
 	secret: 'secret', 
 	resave: true,
     saveUninitialized: true,
-    cookie: {secure: false, sameSite: false}
+	cookie: {secure: false, sameSite: false},
+	store: new MemoryStore
 }));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
