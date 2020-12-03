@@ -456,8 +456,36 @@ app.post('/api/staff/flights', (req, res) => {
 		connection.query(
 			`SELECT * FROM airline_staff NATURAL JOIN airline NATURAL JOIN flight
 			WHERE airline_staff.username = ?
-			AND `,
+			AND (departure_time BETWEEN ? AND ?)`,
 			[username, start, end],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/customers', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let username = req.body.username;
+		let flightNum = req.body.flightNum;
+		let airlineName = req.body.airlineName;
+		connection.query(
+			`SELECT customer.email, customer.name, customer.phone_number 
+			FROM airline_staff NATURAL JOIN airline NATURAL JOIN flight NATURAL JOIN ticket NATURAL JOIN purchases NATURAL JOIN customer
+			WHERE airline_staff.username = ?
+			AND flight.flight_num = ?
+			AND flight.airline_name = ?`,
+			[username, flightNum, airlineName],
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
