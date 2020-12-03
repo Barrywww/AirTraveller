@@ -34,6 +34,20 @@ class AgentPage extends React.Component{
             this.props.history.push('/admin')
         }
         else{
+            let checkOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: Cookies.get("adminID")
+                })
+            }
+            console.log()
+            let loginCheckResponse = await fetch('http://localhost:3000/api/agent/flight', checkOptions);
+
+            if (loginCheckResponse.status !== 200){
+                await alert("User authentication failed, please login again!");
+                this.props.history.push('/admin')
+            }
         }
     }
 
