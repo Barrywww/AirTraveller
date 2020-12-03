@@ -13,6 +13,7 @@ const adminTypes = ["Booking Agent", "Airline Staff"];
 
 class LoginPage extends React.Component{
     async adminClick (values){
+        values["email"] = values["username"];
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
