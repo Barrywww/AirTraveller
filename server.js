@@ -649,7 +649,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 					res.sendStatus(500);
 				}
 				else{
-					//
+					res.send(results);
 				}
 			}
 		);
@@ -665,7 +665,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 					res.sendStatus(500);
 				}
 				else{
-					res.sendStatus(200);
+					res.send(results);
 				}
 			}
 		);
@@ -678,8 +678,28 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 
 app.post('/api/staff/agentsOnCommissions', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		
-		res.sendStatus(200);
+		let username = req.session.username;
+		let startdate = req.body.startdate;
+		let enddate = req.body.enddate;
+		connection.query(
+			`SELECT SUM(price), booking_agent_id, booking_agent.email
+			FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket NATURAL JOIN flight
+			WHERE (purchase_date BETWEEN ? AND ?)
+			AND flight.airline_name = (
+				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+			) GROUP BY purchases.booking_agent_id
+			ORDER BY SUM(flight.price);`,
+			[startdate, enddate, username],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
@@ -688,8 +708,27 @@ app.post('/api/staff/agentsOnCommissions', (req, res) => {
 
 app.post('/api/staff/freqCustomers', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		
-		res.sendStatus(200);
+		let username = req.session.username;
+		let startdate = req.body.startdate;
+		let enddate = req.body.enddate;
+		connection.query(
+			`SELECT customer.email, customer.name FROM flight NATURAL JOIN ticket NATURAL JOIN purchases NATURAL JOIN customer
+			WHERE (purchase_date BETWEEN ? AND ?)
+			AND flight.airline_name = (
+				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+			) GROUP BY customer.email
+			ORDER BY COUNT(ticket.ticket_id) DESC LIMIT 5;`,
+			[startdate, enddate, username],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
@@ -698,18 +737,86 @@ app.post('/api/staff/freqCustomers', (req, res) => {
 
 app.post('/api/staff/reports', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		
-		res.sendStatus(200);
+		let username = req.session.username;
+		let startdate = req.body.startdate;
+		let enddate = req.body.enddate;
+		connection.query(
+			`SELECT COUNT(ticket_id) FROM flight NATURAL JOIN ticket NATURAL JOIN purchases
+			WHERE (purchase_date BETWEEN ? AND ?)
+			AND flight.airline_name = (
+				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+			)`,
+			[startdate, enddate, username],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
 	}
 });
 
-app.post('/api/staff/revenue', (req, res) => {
+app.post('/api/staff/revenueDirect', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let username = req.session.username;
+		let date = req.body.date;
+		let now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		connection.query(
+			`SELECT SUM(flight.price) FROM purchases NATURAL JOIN ticket NATURAL JOIN flight
+			WHERE purchases.purchase_date BETWEEN ? AND ?
+			AND purchases.booking_agent_id = null
+			AND flight.airline_name = (
+				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+			);`,
+			[date, now, username],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 		
-		res.sendStatus(200);
+	}
+	else{
+		res.sendStatus(300);
+	}
+});
+
+app.post('/api/staff/revenueIndirect', (req, res) => {
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
+		let username = req.session.username;
+		let date = req.body.date;
+		let now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		connection.query(
+			`SELECT SUM(flight.price) FROM purchases NATURAL JOIN ticket NATURAL JOIN flight
+			WHERE purchases.purchase_date BETWEEN ? AND ?
+			AND purchases.booking_agent_id != null
+			AND flight.airline_name = (
+				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+			);`,
+			[date, now, username],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
+		
 	}
 	else{
 		res.sendStatus(300);
@@ -718,8 +825,25 @@ app.post('/api/staff/revenue', (req, res) => {
 
 app.post('/api/staff/topDest', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		
-		res.sendStatus(200);
+		let date = req.body.date;
+		let now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		connection.query(
+			`SELECT COUNT(airport.airport_city), airport.airport_city FROM purchases NATURAL JOIN ticket NATURAL JOIN flight, airport
+			WHERE flight.arrival_airport = airport.airport_name
+			AND (purchase_date NETWEEM ? AND ?)
+			GROUP BY airport.airport_city
+			ORDER BY COUNT(airport.airport_city) DESC LIMIT 5`,
+			[date, now],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					res.send(results);
+				}
+			}
+		);
 	}
 	else{
 		res.sendStatus(300);
