@@ -215,7 +215,7 @@ app.post('/api/login/staff', (req, res) => {
 });
 
 app.post('/api/customer/flights', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Customer"){
+	if(req.session.loggedin === true && req.session.identity === "Customer"){
 		let email = req.body.email;
 		connection.query(
 			`SELECT * FROM customer, purchases, ticket, flight
@@ -238,7 +238,7 @@ app.post('/api/customer/flights', (req, res) => {
 
 
 app.post('/api/customer/purchase', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Customer"){
+	if(req.session.loggedin === true && req.session.identity === "Customer"){
 		let email = req.body.email;
 		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
@@ -266,7 +266,7 @@ app.post('/api/customer/purchase', (req, res) => {
 
 
 app.post('/api/customer/bill', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Customer"){
+	if(req.session.loggedin === true && req.session.identity === "Customer"){
 		let email = req.body.email;
 		connection.query(
 			`SELECT purchases.purchase_date, flight.price FROM purchases, ticket, flight
@@ -293,7 +293,7 @@ app.post('/api/customer/bill', (req, res) => {
 
 
 app.post('/api/customer/logout', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Customer"){
+	if(req.session.loggedin === true && req.session.identity === "Customer"){
 		req.session.destroy();
 		res.sendStatus(200);
 	}
@@ -304,7 +304,7 @@ app.post('/api/customer/logout', (req, res) => {
 
 
 app.post('/api/agent/flight', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		let agentID = req.body.agentID;
 		connection.query(
 			`SELECT * FROM customer, purchases, ticket, flight
@@ -326,7 +326,7 @@ app.post('/api/agent/flight', (req, res) => {
 });
 
 app.post('/api/agent/purchase', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		let agentID = req.body.agentID;
 		let email = req.body.email;
 		let flightNum = req.body.flightNum;
@@ -355,12 +355,12 @@ app.post('/api/agent/purchase', (req, res) => {
 
 
 app.post('/api/agent/commission', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		let agentID = req.body.agentID;
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
-			`SELECT price, purchase_date FROM purchases NATRUAL JOIN ticket NATRUAL JOIN flight
+			`SELECT price, purchase_date FROM purchases NATURAL JOIN ticket NATURAL JOIN flight
 			WHERE booking_agent_id = ?
 			AND (purchase_date BETWEEN ? AND ?);`,
 			[agentID, start, end],
@@ -381,7 +381,7 @@ app.post('/api/agent/commission', (req, res) => {
 });
 
 app.post('/api/agent/fathers', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		let agentID = req.body.agentID;
 		let start = req.body.start;
 		let end = req.body.end;
@@ -390,7 +390,7 @@ app.post('/api/agent/fathers', (req, res) => {
 			ORDER BY COUNT(ticket_id) DESC LIMIT 5
 			WHERE booking_agent_id = ? 
 			AND (purchase_date BETWEEN ? AND ?)
-			GROUP BY custmoer_email;`,
+			GROUP BY customer_email;`,
 			[agentID, start, end],
 			(error, results, fields) => {
 				if(error){
@@ -409,7 +409,7 @@ app.post('/api/agent/fathers', (req, res) => {
 });
 
 app.post('/api/agent/mothers', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		let agentID = req.body.agentID;
 		let start = req.body.start;
 		let end = req.body.end;
@@ -418,7 +418,7 @@ app.post('/api/agent/mothers', (req, res) => {
 			ORDER BY SUM(price) DESC LIMIT 5
 			WHERE booking_agent_id = ? 
 			AND (purchase_date BETWEEN ? AND ?)
-			GROUP BY custmoer_email;`,
+			GROUP BY customer_email;`,
 			[agentID, start, end],
 			(error, results, fields) => {
 				if(error){
@@ -437,7 +437,7 @@ app.post('/api/agent/mothers', (req, res) => {
 });
 
 app.post('/api/agent/logout', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Agent"){
+	if(req.session.loggedin === true && req.session.identity === "Agent"){
 		req.session.destroy();
 		res.sendStatus(200);
 	}
@@ -448,7 +448,7 @@ app.post('/api/agent/logout', (req, res) => {
 
 
 app.post('/api/staff/flights', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Staff"){
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
 			
 	}
 	else{
@@ -460,7 +460,7 @@ app.post('/api/staff/flights', (req, res) => {
 
 
 app.post('/api/staff/logout', (req, res) => {
-	if(req.session.loggedin == True && req.session.identity == "Staff"){
+	if(req.session.loggedin === true && req.session.identity === "Staff"){
 		req.session.destroy();
 		res.sendStatus(200);
 	}
