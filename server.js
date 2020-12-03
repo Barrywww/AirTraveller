@@ -84,7 +84,7 @@ app.post('/api/register/customer', (req, res) => {
 	let passportExpiration = req.body.passportExpiration;
 	let passportCountry = req.body.passportCountry;
 	let dateOfBirth = req.body.dateOfBirth;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex');
 	console.log([email, name, hashPassword, buildingNumber, street, city, state, phoneNumber, passportNumber, passportExpiration, passportCountry, dateOfBirth]);
 	connection.query(
 		`INSERT INTO customer VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, 
@@ -103,7 +103,7 @@ app.post('/api/register/customer', (req, res) => {
 app.post('/api/register/agent', (req, res) => {
 	let email = req.body.email;
 	let password = req.body.password;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex');
 	connection.query(
 		`INSERT INTO booking_agent(email, password) VALUES (?,?)`,
 		[email, hashPassword], 
@@ -125,7 +125,7 @@ app.post('/api/register/staff', (req, res) => {
 	let password = req.body.password;
 	let dateOfBirth = req.body.dateOfBirth;
 	let airlineName = req.body.airlineName;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex');
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex');
 	connection.query(
 		`INSERT INTO airline_staff VALUES (?, ?, ?, ?, ?, ?)`, 
 		[username, firstName, lastName, hashPassword, dateOfBirth, airlineName], 
@@ -143,7 +143,7 @@ app.post('/api/register/staff', (req, res) => {
 app.post('/api/login/customer', (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex')
 	console.log(username, password);
 	if (username && password) {
 		connection.query(
@@ -169,7 +169,7 @@ app.post('/api/login/customer', (req, res) => {
 app.post('/api/login/agent', (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex')
 	if (username && password) {
 		connection.query(
             'SELECT * FROM booking_agent WHERE username = ? AND password = ?', 
@@ -193,7 +193,7 @@ app.post('/api/login/agent', (req, res) => {
 app.post('/api/login/staff', (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
-	let hashPassword = crypto.createHmac('sha1', key).update(password).digest('hex')
+	let hashPassword = crypto.createHmac('md5').update(password).digest('hex')
 	if (username && password) {
 		connection.query(
             'SELECT * FROM airline_staff WHERE username = ? AND password = ?', 
