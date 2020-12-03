@@ -11,7 +11,6 @@ const { MemoryStore } = require('express-session');
 let app = module.exports = express();
 let key = `3082N-t2983-[mIKi-rU42h-3roqe-idkxf-[239s&`
 
-var MemoryStore =session.MemoryStore;
 app.use(session({
 	secret: 'secret', 
 	resave: true,
@@ -107,9 +106,10 @@ app.post('/api/register/agent', (req, res) => {
 	let email = req.body.email;
 	let password = req.body.password;
 	let hashPassword = crypto.createHash('md5').update(password).digest('hex');
+	let id = rypto.createHmac('sha1', key).update(email).digest('hex');
 	connection.query(
-		`INSERT INTO booking_agent(email, password) VALUES (?,?)`,
-		[email, hashPassword], 
+		`INSERT INTO booking_agent VALUES (?,?,?)`,
+		[email, hashPassword, id], 
 		(error, results, fields) => {
 			if (error) {
 				console.log(error);
@@ -508,19 +508,26 @@ app.post('/api/staff/customers', (req, res) => {
 
 app.post('/api/staff/create', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		let username = req.body.username;
-		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
+		let flightNum = req.body.flightNum;
+		let departureAirport = req.body.departureAirport;
+		let departureTime = req.body.departureTime;
+  		let arrivalAirport = req.body.arrivalAirport;
+  		let arrivalTime = req.body.arrivalTime;
+  		let price = req.body.price;
+  		let status = req.body.status;
+  		let airplaneID = req.body.airplaneID;
+
 		connection.query(
-			``,
-			[username, flightNum, airlineName],
+			`INSERT INTO flight VALUES(?,?,?,?,?,?,?,?,?);`,
+			[airlineName, flightNum, departureAirport, departureTime, arrivalAirport, arrivalTime, price, status, airplaneID],
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
 					res.sendStatus(500);
 				}
 				else{
-					res.send(results);
+					res.sendStatus(200);
 				}
 			}
 		);
@@ -529,6 +536,8 @@ app.post('/api/staff/create', (req, res) => {
 		res.sendStatus(300);
 	}
 });
+
+
 
 
 
