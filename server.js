@@ -272,9 +272,21 @@ app.post('/api/customer/purchase', (req, res) => {
 		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'') ;
 		let id = Math.floor((Math.random() * 100000000) + 1);
 		connection.query(
-			`INSERT INTO ticket VALUES(?,?,?);
-			INSERT INTO purchases VALUES(?,?,?,?);`,
-			[id, airlineName, flightNum, id, email, null, date],
+			`INSERT INTO ticket VALUES(?,?,?);`,
+			[id, airlineName, flightNum],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.send(500);
+				}
+				else{
+					//res.send(200);
+				}
+			}
+		);
+		connection.query(
+			`INSERT INTO purchases VALUES(?,?,?,?);`,
+			[id, email, null, date],
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
@@ -362,9 +374,21 @@ app.post('/api/agent/purchase', (req, res) => {
 		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
 		let id = Math.floor((Math.random() * 100000000) + 1);
 		connection.query(
-			`INSERT INTO ticket VALUES(?,?,?);
-			INSERT INTO purchases VALUES(?,?,?,?);`,
-			[id, airlineName, flightNum, id, email, agentID, date],
+			`INSERT INTO ticket VALUES(?,?,?)`,
+			[id, airlineName, flightNum],
+			(error, results, fields) => {
+				if(error){
+					console.log(error);
+					res.sendStatus(500);
+				}
+				else{
+					//res.sendStatus(200);
+				}
+			}
+		);
+		connection.query(
+			`INSERT INTO purchases VALUES(?,?,?,?);`,
+			[id, email, agentID, date],
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
