@@ -270,7 +270,7 @@ app.post('/api/customer/purchase', (req, res) => {
 		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
 		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'') ;
-		let id = crypto.createHmac('sha1', key).update(email + date).digest('hex');
+		let id = Math.floor((Math.random() * 100000000) + 1);
 		connection.query(
 			`INSERT INTO ticket VALUES(?,?,?);
 			INSERT INTO purchases VALUES(?,?,?,?);`,
