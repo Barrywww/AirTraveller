@@ -189,12 +189,13 @@ app.post('/api/login/agent', (req, res) => {
 	let hashPassword = crypto.createHash('md5').update(password).digest('hex')
 	if (email && password) {
 		connection.query(
-            'SELECT * FROM booking_agent WHERE email = ? AND password = ?', 
+            'SELECT booking_agent_id FROM booking_agent WHERE email = ? AND password = ?', 
             [email, hashPassword], 
             (error, results, fields) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.email = email; 
+					req.session.agentID = results[0].booking_agent_id;
 					req.session.identity = "Agent";
 					res.sendStatus(200);
                 } else {
@@ -346,12 +347,12 @@ app.post('/api/agent/flight', (req, res) => {
 
 app.post('/api/agent/purchase', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let agentID = req.body.agentID;
+		let agentID = req.session.agentID;
 		let email = req.body.email;
 		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
 		let date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/,'');
-		let id = crypto.createHmac('sha1', key).update(email + date).digest('hex');
+		let id = Math.floor((Math.random() * 100000000) + 1);
 		connection.query(
 			`INSERT INTO ticket VALUES(?,?,?);
 			INSERT INTO purchases VALUES(?,?,?,?);`,
