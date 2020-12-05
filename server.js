@@ -746,7 +746,7 @@ app.post('/api/staff/agentsOnCommissions', (req, res) => {
 			FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket NATURAL JOIN flight
 			WHERE (purchase_date BETWEEN ? AND ?)
 			AND flight.airline_name = (
-				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+				SELECT DISTINCT airline_name FROM staff WHERE username = ?
 			) GROUP BY booking_agent.email
 			ORDER BY SUM(flight.price);`,
 			[startdate, enddate, username],
@@ -775,7 +775,7 @@ app.post('/api/staff/freqCustomers', (req, res) => {
 			`SELECT customer.email, customer.name FROM flight NATURAL JOIN ticket NATURAL JOIN purchases NATURAL JOIN customer
 			WHERE (purchase_date BETWEEN ? AND ?)
 			AND flight.airline_name = (
-				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+				SELECT DISTINCT airline_name FROM staff WHERE username = ?
 			) GROUP BY customer.email
 			ORDER BY COUNT(ticket.ticket_id) DESC LIMIT 5;`,
 			[startdate, enddate, username],
@@ -804,7 +804,7 @@ app.post('/api/staff/reports', (req, res) => {
 			`SELECT COUNT(ticket_id) FROM flight NATURAL JOIN ticket NATURAL JOIN purchases
 			WHERE (purchase_date BETWEEN ? AND ?)
 			AND flight.airline_name = (
-				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+				SELECT DISTINCT airline_name FROM staff WHERE username = ?
 			)`,
 			[startdate, enddate, username],
 			(error, results, fields) => {
@@ -833,7 +833,7 @@ app.post('/api/staff/revenueDirect', (req, res) => {
 			WHERE purchases.purchase_date BETWEEN ? AND ?
 			AND purchases.booking_agent_id = null
 			AND flight.airline_name = (
-				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+				SELECT DISTINCT airline_name FROM staff WHERE username = ?
 			);`,
 			[date, now, username],
 			(error, results, fields) => {
@@ -863,7 +863,7 @@ app.post('/api/staff/revenueIndirect', (req, res) => {
 			WHERE purchases.purchase_date BETWEEN ? AND ?
 			AND purchases.booking_agent_id != null
 			AND flight.airline_name = (
-				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
+				SELECT DISTINCT airline_name FROM staff WHERE username = ?
 			);`,
 			[date, now, username],
 			(error, results, fields) => {
@@ -890,7 +890,7 @@ app.post('/api/staff/topDest', (req, res) => {
 		connection.query(
 			`SELECT COUNT(airport.airport_city), airport.airport_city FROM purchases NATURAL JOIN ticket NATURAL JOIN flight, airport
 			WHERE flight.arrival_airport = airport.airport_name
-			AND (purchase_date BETWEEM ? AND ?)
+			AND (purchase_date BETWEN ? AND ?)
 			GROUP BY airport.airport_city
 			ORDER BY COUNT(airport.airport_city) DESC LIMIT 5`,
 			[date, now],
