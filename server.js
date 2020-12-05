@@ -523,7 +523,7 @@ app.post('/api/agent/logout', (req, res) => {
 
 app.post('/api/staff/flights', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		let username = req.body.username;
+		let username = req.session.username;
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
@@ -549,7 +549,7 @@ app.post('/api/staff/flights', (req, res) => {
 
 app.post('/api/staff/customers-flight', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
-		let username = req.body.username;
+		let username = req.session.username;
 		let flightNum = req.body.flightNum;
 		let airlineName = req.body.airlineName;
 		connection.query(
