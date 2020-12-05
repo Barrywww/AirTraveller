@@ -251,7 +251,7 @@ app.post('/api/login/staff', (req, res) => {
                 if (results.length > 0) {
                     req.session.loggedin = true;
 					req.session.username = username; 
-					req.session.identity = "Airline Staff";
+					req.session.identity = "Staff";
                 } else {
                     res.send(418);
 				}			
