@@ -59,20 +59,42 @@ app.post('/api/search/flight', (req, res) => {
 	let srcaptName = req.body.srcaptName;
 	let dstaptName = req.body.dstaptName;
 	let date = req.body.date;
-	connection.query(
-		`SELECT * FROM flight 
-			WHERE departure_airport = ?
-			AND arrival_airport = ?
-			AND departure_time = ?`, 
-		[srcaptName, dstaptName, date], 
-		(error, results, fields) => {
-			if (results.length > 0) {
-				res.send(results);
-			} else {
-				res.sendStatus(404);
-			}			
-		res.end();
-	});
+	let flightNum = req.body.flightNum;
+	let airlineName = req.body.airlineName;
+	// console.log(((srcaptName && dstaptName && date) !== undefined) && ((srcaptName && dstaptName && date) !== null));
+	// console.log(((airlineName && flightNum) !== undefined && (airlineName && flightNum) !== null));
+	if ((srcaptName && dstaptName && date) !== undefined && (srcaptName && dstaptName && date) !== null){
+		connection.query(
+			`SELECT * FROM flight 
+				WHERE departure_airport = ?
+				AND arrival_airport = ?
+				AND date(departure_time) = ?`,
+			[srcaptName, dstaptName, date],
+			(error, results, fields) => {
+				if (results.length > 0) {
+					res.send(results);
+				} else {
+					res.sendStatus(404);
+				}
+				res.end();
+			});
+
+	}
+	else if ((airlineName && flightNum) !== undefined && (airlineName && flightNum) !== null){
+		connection.query(
+			`SELECT * FROM flight 
+				WHERE airline_name = ?
+				AND flight_num = ?`,
+			[airlineName, flightNum],
+			(error, results, fields) => {
+				if (results.length > 0) {
+					res.send(results);
+				} else {
+					res.sendStatus(404);
+				}
+				res.end();
+			});
+	}
 });
 
 app.post('/api/search/status', (req, res) => {
@@ -665,11 +687,16 @@ app.post('/api/staff/addAirport', (req, res) => {
 app.post('/api/staff/agentsOnSales', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Staff"){
 		let date = new Date();
-		let pastmonth = date.setDate(date.getDate - 30);
-		let pastyear = date.setDate(date.getDate - 365);
+		let pastmonth = new Date();
+		let pastyear = new Date();
+		pastmonth.setDate(date.getDate() - 30);
+		pastyear.setDate(date.getDate() - 365);
+
 		let datestring = date.toISOString().replace(/T/, ' ').replace(/\..+/,'');
 		let pastmonthstring = pastmonth.toISOString().replace(/T/, ' ').replace(/\..+/,'');
 		let pastyearstring = pastyear.toISOString().replace(/T/, ' ').replace(/\..+/,'');
+		console.log(pastmonthstring);
+		let result1 = ''; 
 		connection.query(
 			`SELECT COUNT(ticket_id), booking_agent_id, booking_agent.email FROM booking_agent NATURAL JOIN purchases 
 			WHERE purchase_date BETWEEN ? AND ?
@@ -682,7 +709,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 					res.sendStatus(500);
 				}
 				else{
-					res.send(results);
+					result1 = results;
 				}
 			}
 		);
@@ -698,7 +725,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 					res.sendStatus(500);
 				}
 				else{
-					res.send(results);
+					res.send({"lastMonth": result1, "lastYear":results});
 				}
 			}
 		);
@@ -863,7 +890,7 @@ app.post('/api/staff/topDest', (req, res) => {
 		connection.query(
 			`SELECT COUNT(airport.airport_city), airport.airport_city FROM purchases NATURAL JOIN ticket NATURAL JOIN flight, airport
 			WHERE flight.arrival_airport = airport.airport_name
-			AND (purchase_date NETWEEM ? AND ?)
+			AND (purchase_date BETWEEM ? AND ?)
 			GROUP BY airport.airport_city
 			ORDER BY COUNT(airport.airport_city) DESC LIMIT 5`,
 			[date, now],
