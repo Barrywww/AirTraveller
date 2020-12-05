@@ -366,7 +366,7 @@ app.post('/api/customer/logout', (req, res) => {
 
 app.post('/api/agent/flight', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let email = req.body.email;
+		let email = req.session.email;
 		connection.query(
 			`SELECT * FROM customer, purchases, ticket, flight, booking_agent
 			WHERE customer.email = purchases.customer_email 
@@ -430,7 +430,7 @@ app.post('/api/agent/purchase', (req, res) => {
 
 app.post('/api/agent/commission', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let agentID = req.body.agentID;
+		let agentID = req.session.agentID;
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
@@ -484,7 +484,7 @@ app.post('/api/agent/fathers', (req, res) => {
 
 app.post('/api/agent/mothers', (req, res) => {
 	if(req.session.loggedin === true && req.session.identity === "Agent"){
-		let agentID = req.body.agentID;
+		let agentID = req.session.agentID;
 		let start = req.body.start;
 		let end = req.body.end;
 		connection.query(
