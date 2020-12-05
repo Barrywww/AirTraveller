@@ -897,7 +897,7 @@ app.post('/api/staff/topDest', (req, res) => {
 			(error, results, fields) => {
 				if(error){
 					console.log(error);
-					res.send(500);
+					res.sendStatus(500);
 				}
 				else{
 					res.send(results);
