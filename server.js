@@ -700,7 +700,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 		connection.query(
 			`SELECT COUNT(ticket_id), booking_agent_id, booking_agent.email FROM booking_agent NATURAL JOIN purchases 
 			WHERE purchase_date BETWEEN ? AND ?
-			GROUP BY booking_agent_id
+			GROUP BY booking_agent.email
 			ORDER BY COUNT(ticket_id) DESC LIMIT 5;`,
 			[pastmonthstring, datestring],
 			(error, results, fields) => {
@@ -716,7 +716,7 @@ app.post('/api/staff/agentsOnSales', (req, res) => {
 		connection.query(
 			`SELECT COUNT(ticket_id), booking_agent_id, booking_agent.email FROM booking_agent NATURAL JOIN purchases
 			WHERE purchase_date BETWEEN ? AND ?
-			GROUP BY booking_agent_id
+			GROUP BY booking_agent.email
 			ORDER BY COUNT(ticket_id) DESC LIMIT 5 ;`,
 			[pastyearstring, datestring],
 			(error, results, fields) => {
@@ -747,7 +747,7 @@ app.post('/api/staff/agentsOnCommissions', (req, res) => {
 			WHERE (purchase_date BETWEEN ? AND ?)
 			AND flight.airline_name = (
 				SELECT DISTINCT aitline_name FROM staff WHERE username = ?
-			) GROUP BY purchases.booking_agent_id
+			) GROUP BY booking_agent.email
 			ORDER BY SUM(flight.price);`,
 			[startdate, enddate, username],
 			(error, results, fields) => {
