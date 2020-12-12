@@ -3,10 +3,12 @@ import {LaptopOutlined, IdcardOutlined, TeamOutlined, UserOutlined, DownOutlined
 import React from "react";
 import {Route, Switch, Redirect, NavLink} from "react-router-dom";
 import AgentPage from "./agent";
+import StaffPage from "./staff";
 import "../css/admin_template.less"
 import Logo from "../../res/logo_2.png";
 import Background from "../../res/main_bg_1.jpg";
 import Cookies from "js-cookie";
+import {MainRouter} from "./bundle";
 
 
 const adminTypes = ["Booking Agent", "Airline Staff"];
@@ -31,21 +33,17 @@ class LoginPage extends React.Component{
 
         if(response.status === 200 ){
             if (this.state.adminType === adminTypes[0]){
-                if (values["remember"] === true){
-                    await Cookies.set("adminRole", adminTypes[0]);
-                    await Cookies.set("adminID", values["email"]);
-                    await Cookies.set("adminLoggedIn", true);
-                }
-                await alert('Login Success');
+                await Cookies.set("adminRole", adminTypes[0]);
+                await Cookies.set("adminID", values["email"]);
+                await Cookies.set("adminLoggedIn", true);
+                // await alert('Login Success');
                 this.props.history.push('/admin/agent')
             }
             else if (this.state.adminType === adminTypes[1]){
-                if (values["remember"] === true){
-                    await Cookies.set("adminRole", adminTypes[1]);
-                    await Cookies.set("adminID", values["username"]);
-                    await Cookies.set("adminLoggedIn", true);
-                }
-                await alert('Login Success');
+                await Cookies.set("adminRole", adminTypes[1]);
+                await Cookies.set("adminID", values["username"]);
+                await Cookies.set("adminLoggedIn", true);
+                // await alert('Login Success');
                 this.props.history.push('/admin/staff')
             }
             else{
@@ -142,11 +140,6 @@ class LoginPage extends React.Component{
                                         </Form.Item>
                                     </Row>
                                     <Row>
-                                        <Form.Item name="remember" valuePropName="unchecked" style={{width:"100%", margin: "10px 0"}}>
-                                            <Checkbox>Remember me</Checkbox>
-                                        </Form.Item>
-                                    </Row>
-                                    <Row>
                                         <Form.Item style={{width:"100%"}}>
                                             <Button type="primary" htmlType="submit" style={{width:"100%"}}>
                                                 Login
@@ -167,8 +160,10 @@ export const AdminRouter = ({match}) => {
     return(
         <Route>
             <Switch>
+                <Route exact path="/" component={MainRouter}/>
                 <Route exact path={match.path} component={LoginPage}/>
                 <Route exact path={match.path + '/agent'} component={AgentPage} />
+                <Route exact path={match.path + '/staff'} component={StaffPage} />
             </Switch>
         </Route>
     )

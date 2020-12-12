@@ -15,10 +15,13 @@ import {MainHeader, TravelAlert} from "./bundle";
 import 'antd/dist/antd.compact.less'
 import '../css/registration.less'
 import {NavLink} from "react-router-dom";
+import {createBrowserHistory} from "history";
 
 const {Content, Footer} = Layout;
 
 const userTypes = ["AirTraveller Club Member", "Booking Agent", "Airline Staff"];
+
+let history = createBrowserHistory();
 
 class RegistrationFields extends React.Component{
     async regisClick (values){
@@ -43,6 +46,8 @@ class RegistrationFields extends React.Component{
         }
         if(response.status === 200 ){
             alert('Registration Success');
+            history.push("/login");
+            history.go();
         }else{
             alert("Registration Failed");
         }

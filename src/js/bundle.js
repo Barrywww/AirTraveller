@@ -1,9 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Cookies from "js-cookie";
-import {BrowserRouter, Route, Switch, NavLink, useHistory} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, NavLink, HashRouter, Link} from 'react-router-dom';
+import {createBrowserHistory} from "history";
 
-import {Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, AutoComplete, DatePicker, Form} from 'antd';
+import {
+    Layout,
+    Menu,
+    Breadcrumb,
+    Divider,
+    Row,
+    Col,
+    Button,
+    Typography,
+    AutoComplete,
+    DatePicker,
+    Form,
+    Input
+} from 'antd';
 import { UserOutlined, LaptopOutlined, NotificationOutlined, SearchOutlined, AlertTwoTone } from '@ant-design/icons';
 
 import 'antd/dist/antd.compact.less'
@@ -15,12 +29,13 @@ import LoginPage from "./user_login";
 import RegistrationPage from "./user_registration";
 import AdminRouter from "./admin";
 import AgentPage from "./agent";
+import SearchPage from "./search";
+import moment from "moment";
+import StatusPage from "./status";
+import ProfilePage from "./profile";
 // import StaffPage from "./staff";
 // import UserHome from "./user_home";
-
 // const history = useHistory();
-const domesticAirports = airports["domestic"];
-const internationalAirports = airports["international"];
 
 const { Title } = Typography;
 const { SubMenu } = Menu;
@@ -28,6 +43,9 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const IATARegex = /[A-Z]{3}/gm;
 const IATARegex_brackets = /[(][A-Z]{3}[)]/gm;
+
+let homeRef = React.createRef();
+let history = createBrowserHistory();
 
 class FieldAutoComplete extends React.Component {
     constructor(props) {
@@ -67,23 +85,19 @@ class MainScheduler extends React.Component {
         super(props);
     }
 
-    async homeQueryClick (values){
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values)
-        };
-        values["date"] = values["date"].format("YYYY-MM-DD");
-        values["srcaptName"]
-        let response;
-        if (this.state.regisType === userTypes[0]){
-            response = await fetch('http://localhost:3000/api/register/customer', requestOptions)
-        }
+    disabledDate(current) {
+        // Can not select days before today and today
+        return current && current < moment().startOf('day');
     }
 
     render(){
+        // let history = useHistory();
         const onFinish = values => {
-            console.log("on finish");
+            Cookies.set("srcCity", values["srcCity"]);
+            Cookies.set("dstCity", values["dstCity"]);
+            Cookies.set("depDate", values["date"].format("YYYY-MM-DD"));
+            history.push("/search")
+            history.go();
         }
 
         const onFinishFailed = errMsg => {
@@ -91,29 +105,33 @@ class MainScheduler extends React.Component {
         }
         return(
             <div id="schedulerWrap">
-                <Title level={4} style={{ padding: '10px 35px', margin: "0 auto", fontWeight:"bold" }} id="greeting">
-                    Ready for your next trip? Book with us now.
-                </Title>
                 <Form
                     name="basic"
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}>
-                    <Row justify="space-between">
-                            <Col className="schedulerField" style={{textAlign:"start"}} span={6} xs={{ order: 1 }} sm={{ order: 1 }} md={{ order: 1 }} lg={{ order: 1 }}>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="left" style={{padding:"10px 0", width: "100%", margin: "0"}}>
+                        <Col span={24}>
+                            <div style={{fontSize: "1.3rem", margin: "0 auto", fontWeight:"bold" }} id="greeting">
+                                Ready for your next trip? Book with us now.
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between" style={{padding:"5px 0", width: "100%", margin: "0"}}>
+                        <Col className="schedulerField" style={{textAlign:"start"}} span={6} >
                                 <Form.Item
-                                    name="srcaptName"
-                                    rules={[{ required: true, message: 'Please input your departure airport!'}]}
+                                    name="srcCity"
+                                    rules={[{ required: true, message: 'Please input your departure city!'}]}
                                     style={{width: "100%", margin:"0"}}>
-                                    <FieldAutoComplete options={domesticAirports} placeHolder="Leaving from" marginLeft="35px"/>
+                                    <Input size="large" style={{margin: "10px 0", width:"100%", height:"48px", fontSize:"18px"}} placeholder="Departure city"/>
                                 </Form.Item>
                             </Col>
-                            <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 2 }} sm={{ order: 2 }} md={{ order: 2 }} lg={{ order: 2 }}>
+                            <Col className="schedulerField" style={{textAlign:"center"}} span={6}>
                                 <Form.Item
-                                    name="dstaptName"
-                                    rules={[{ required: true, message: 'Please input your arrival airport!'}]}
+                                    name="dstCity"
+                                    rules={[{ required: true, message: 'Please input your arrival city!'}]}
                                     style={{width: "100%", margin:"0"}}>
-                                    <FieldAutoComplete options={domesticAirports} placeHolder="Going to"/>
+                                    <Input size="large" style={{margin: "10px 0", width:"100%", height:"48px", fontSize:"18px"}} placeholder="Arrival city"/>
                                 </Form.Item>
                             </Col>
                             <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 3 }} sm={{ order: 3 }} md={{ order: 3 }} lg={{ order: 3 }}>
@@ -121,11 +139,11 @@ class MainScheduler extends React.Component {
                                     name="date"
                                     rules={[{ required: true, message: 'Please input your departure date!'}]}
                                     style={{width: "100%", margin:"0"}}>
-                                    <DatePicker size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px"}} placeholder="Departing on"/>
+                                    <DatePicker disabledDate={this.disabledDate} size="large" style={{margin: "10px 0", width:"100%", height:"48px", fontSize:"18px"}} placeholder="Departing on"/>
                                 </Form.Item>
                             </Col>
                             <Col className="schedulerField" style={{textAlign:"center"}} span={6} xs={{ order: 4 }} sm={{ order: 4 }} md={{ order: 4 }} lg={{ order: 4 }}>
-                                <Button type="primary" htmlType="submit" size="large" style={{margin: "10px 0", width:"80%", height:"48px", fontSize:"18px", overflow: "hidden"}}>
+                                <Button type="primary" htmlType="submit" size="large" style={{margin: "10px 0", width:"100%", height:"48px", fontSize:"18px", overflow: "hidden"}}>
                                     → Search Flights
                                 </Button>
                             </Col>
@@ -167,9 +185,43 @@ class MainContent extends React.Component{
 class MainHeader extends React.Component{
     constructor(props) {
         super(props);
+        this.state={userLoggedIn: true, userID: ""}
+    }
+
+    componentDidMount() {
+        this.setState({userID: Cookies.get("userID")})
+    }
+
+    handleLogout(){
+        Cookies.remove("userLoggedIn");
+        Cookies.remove("userID");
+        this.setState({userID: ""});
+        history.push("/");
+        history.go();
     }
 
     render() {
+        let loginWrapper;
+        if(Cookies.get("userLoggedIn") === "true"){
+            loginWrapper  = (
+                <div>
+                    <div>Welcome, {this.state.userID}!
+                        <Divider type={"vertical"}/>
+                        <a onClick={this.handleLogout.bind(this)}>Logout</a>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            loginWrapper = (
+                <Row style={{width: "100%"}}>
+                    <NavLink to="/login">Login</NavLink>
+                    <Divider type="vertical"/>
+                    <NavLink to="/registration">Sign up</NavLink>
+                    <Divider type="vertical"/>
+                </Row>
+            )
+        }
         return (
             <Header className={"header"} style={{padding: "0 100px"}}>
                 <Row style={{maxWidth: "1350px", margin: "auto"}}>
@@ -179,22 +231,23 @@ class MainHeader extends React.Component{
                             <img id="logo" src={Logo}/>
                         </NavLink>
                     </Col>
-                    <Col flex={4}>
+                    <Col flex={3}>
                         <Row justify="end" id="headerRow">
                             <Col flex="auto" id="headerMenuCol">
-                                <Menu id="headerMenu" theme={"light"} mode={"horizontal"}>
-                                    <Menu.Item key={'1'}>Book</Menu.Item>
-                                    <Menu.Item key={'2'}>My Trip</Menu.Item>
-                                    <Menu.Item key={'3'}>Membership</Menu.Item>
-                                    <Menu.Item key={'4'}>Newsroom</Menu.Item>
+                                <Menu id="headerMenu" theme={"light"} mode={"horizontal"} onClick={this.handleMenuClick}>
+                                    <Menu.Item key={'1'}>
+                                        <Link to="/search">Flights</Link>
+                                    </Menu.Item>
+                                    <Menu.Item key={'2'}>
+                                        <Link to="/status">Status</Link>
+                                    </Menu.Item>
+                                    <Menu.Item key={'3'}>
+                                        <Link to="/profile">Portal</Link>
+                                    </Menu.Item>
                                 </Menu>
                             </Col>
                             <Col flex="none">
-                                <NavLink to="/login">Login</NavLink>
-                                <Divider type="vertical" />
-                                <NavLink to="/registration">Sign up</NavLink>
-                                <Divider type="vertical" />
-                                <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+                                {loginWrapper}
                             </Col>
                         </Row>
                     </Col>
@@ -252,10 +305,13 @@ class MainRouter extends React.Component{
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" component={HomePage} />
+                    <Route exact path="/" component={HomePage}/>
                     <Route path="/login" component={LoginPage} />
                     <Route path="/registration" component={RegistrationPage}/>
                     <Route path="/admin" component={AdminRouter}/>
+                    <Route path="/search" component={SearchPage}/>
+                    <Route path="/status" component={StatusPage}/>
+                    <Route path="/profile" component={ProfilePage}/>
                     {/*<Route path="/admin/staff" component={StaffPage}/>*/}
                     {/*<Route path="/user/home" component={UserHome}/>*/}
                 </Switch>
@@ -265,4 +321,4 @@ class MainRouter extends React.Component{
 }
 
 ReactDOM.render(<MainRouter />, document.getElementById("root"));
-export {MainHeader, TravelAlert}
+export {MainHeader, TravelAlert, MainRouter}
