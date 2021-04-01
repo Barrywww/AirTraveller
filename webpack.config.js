@@ -4,7 +4,8 @@ const path = require('path');
 module.exports = {
     entry: './src/js/bundle.js',
     output: {
-        filename: "bundle.js",
+        filename: "[name].bundle.js",
+        chunkFilename: "[name].bundle.js",
         path: path.join(__dirname, 'public'),
         publicPath: "/"
     },
@@ -19,37 +20,37 @@ module.exports = {
                 ]
             },
         },
-            {
-                // modify
-                test: [/\.css$/, /\.less$/],
-                use: [
-                    {loader: 'style-loader'},
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            importLoaders: 1,
-                        },
+        {
+            // modify
+            test: [/\.css$/, /\.less$/],
+            use: [
+                {loader: 'style-loader'},
+                {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 1,
                     },
-                    {
-                        loader: 'less-loader', // compiles Less to CSS
-                        options: {
-                            javascriptEnabled: true
-                        }
+                },
+                {
+                    loader: 'less-loader', // compiles Less to CSS
+                    options: {
+                        javascriptEnabled: true
                     }
-                ],
-            },
-            {
-                test: /\.(png|jpg|gif)$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            publicPath: "./",
-                            limit: 10000
-                        }
+                }
+            ],
+        },
+        {
+            test: /\.(png|jpg|gif)$/,
+            use: [
+                {
+                    loader: 'url-loader',
+                    options: {
+                        publicPath: "./",
+                        limit: 10000
                     }
-                ]
-            }]
+                }
+            ]
+        }]
     },
     devServer: {
         open: true,

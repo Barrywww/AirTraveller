@@ -10,7 +10,7 @@ import {
     TeamOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import {MainHeader, TravelAlert} from "./bundle";
+import {MainHeader, TravelAlert} from "./index";
 
 import 'antd/dist/antd.compact.less'
 import '../css/registration.less'

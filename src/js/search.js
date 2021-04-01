@@ -19,7 +19,7 @@ import {
 } from 'antd';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined} from '@ant-design/icons';
 const { Header, Content, Footer, Sider } = Layout;
-import {MainHeader, TravelAlert} from "./bundle";
+import {MainHeader, TravelAlert} from "./index";
 
 import 'antd/dist/antd.compact.less'
 import '../css/login.less'
