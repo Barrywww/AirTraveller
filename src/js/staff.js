@@ -12,20 +12,16 @@ import {
     Form,
     Input,
     DatePicker,
-    Space,
-    Modal,
-    TimePicker,
-    Statistic
+    TimePicker
 } from 'antd';
 import {
-    UserOutlined, LaptopOutlined, NotificationOutlined, SearchOutlined, WalletOutlined, GlobalOutlined,
+    UserOutlined, GlobalOutlined,
     HomeOutlined, AppstoreOutlined, TeamOutlined, CompassOutlined, ReconciliationOutlined
 } from '@ant-design/icons';
 import Logo from "../../res/logo_2.png";
 import {
     staffFlightColumns,
     topCustomerColumnsPur,
-    topCustomerColumnsCom,
     airportColumns,
     airplaneColumns,
     agentColumnsPur, agentColumnsCom, destColumns

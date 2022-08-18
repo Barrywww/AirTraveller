@@ -1,13 +1,11 @@
-import React, {lazy, Suspense} from 'react';
-import ReactDOM from 'react-dom';
-import {AutoComplete, Button, Col, DatePicker, Divider, Form, Input, Layout, Menu, Row} from "antd";
+import React from 'react';
+import {Button, Col, DatePicker, Divider, Form, Input, Layout, Menu, Row} from "antd";
 import moment from "moment";
 import Cookies from "js-cookie";
 import {Link, NavLink} from "react-router-dom";
 import Logo from "../../res/logo_2.png";
 import {AlertTwoTone} from "@ant-design/icons";
 
-// import 'antd/dist/antd.compact.less'
 import '../css/index.less';
 
 const { Header, Content, Footer} = Layout;

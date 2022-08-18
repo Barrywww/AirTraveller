@@ -1,7 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
+const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+    mode: 'production',
+    optimization: {
+        usedExports: true,
+    },
     entry: './src/js/bundle.js',
     output: {
         filename: "[name].bundle.js",
@@ -60,6 +65,7 @@ module.exports = {
         historyApiFallback: true
     },
     plugins: [
+        new BundleAnalyzer(),
         new webpack.HotModuleReplacementPlugin()
     ],
     performance: {

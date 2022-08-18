@@ -1,36 +1,24 @@
 import React from 'react';
-import Cookies from "js-cookie";
 
 
 import {
     Layout,
-    Menu,
     Breadcrumb,
-    Divider,
     Row,
     Col,
     Button,
-    Typography,
     Input,
-    Checkbox,
     Form,
     DatePicker,
-    Table, Space, Modal
+    Table,
 } from 'antd';
-import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined} from '@ant-design/icons';
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer } = Layout;
 import {MainHeader, TravelAlert} from "./index";
 
 import 'antd/dist/antd.compact.less'
 import '../css/login.less'
-import {NavLink, Route, Switch} from "react-router-dom";
-import AgentPage from "./agent";
-import StaffPage from "./staff";
+import {NavLink} from "react-router-dom";
 import {staffFlightColumns} from "./res";
-import moment from "moment";
-import ReactDOM from "react-dom";
-let modal_key = 0;
-
 
 class StatusPage extends React.Component{
     constructor(props) {

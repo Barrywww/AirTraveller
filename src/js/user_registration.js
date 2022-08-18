@@ -1,5 +1,4 @@
 import React from 'react';
-import Cookies from "js-cookie";
 
 import {Breadcrumb, Button, Col, DatePicker, Dropdown, Form, Input, Layout, Menu, Row} from 'antd';
 import {

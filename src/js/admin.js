@@ -1,7 +1,7 @@
-import {Breadcrumb, Layout, Menu, Typography, Form, Input, Checkbox, Button, Row, Col, Dropdown} from "antd";
-import {LaptopOutlined, IdcardOutlined, TeamOutlined, UserOutlined, DownOutlined} from "@ant-design/icons";
+import {Layout, Menu, Form, Input, Button, Row, Col, Dropdown} from "antd";
+import {IdcardOutlined, TeamOutlined, DownOutlined} from "@ant-design/icons";
 import React from "react";
-import {Route, Switch, Redirect, NavLink} from "react-router-dom";
+import {Route, Switch, NavLink} from "react-router-dom";
 import AgentPage from "./agent";
 import StaffPage from "./staff";
 import "../css/admin_template.less"

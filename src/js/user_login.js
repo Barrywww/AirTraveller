@@ -1,16 +1,14 @@
 import React from 'react';
 import Cookies from "js-cookie";
 
-import { Layout, Menu, Breadcrumb, Divider, Row, Col, Button, Typography, Input, Checkbox, Form} from 'antd';
+import { Layout, Breadcrumb, Row, Col, Button, Input, Form} from 'antd';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined} from '@ant-design/icons';
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer} = Layout;
 import {MainHeader, TravelAlert} from "./index";
 
 import 'antd/dist/antd.compact.less'
 import '../css/login.less'
 import {NavLink, Route, Switch} from "react-router-dom";
-import AgentPage from "./agent";
-import StaffPage from "./staff";
 
 class LoginPage extends React.Component{
     constructor(props) {
