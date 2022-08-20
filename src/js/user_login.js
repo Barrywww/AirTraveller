@@ -3,12 +3,13 @@ import Cookies from "js-cookie";
 
 import { Layout, Breadcrumb, Row, Col, Button, Input, Form} from 'antd';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined} from '@ant-design/icons';
-const { Content, Footer} = Layout;
 import {MainHeader, TravelAlert} from "./index";
 
 import 'antd/dist/antd.compact.less'
 import '../css/login.less'
 import {NavLink, Route, Switch} from "react-router-dom";
+
+const { Content, Footer} = Layout;
 
 class LoginPage extends React.Component{
     constructor(props) {
