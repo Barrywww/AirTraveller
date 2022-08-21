@@ -1,9 +1,9 @@
-const webpack = require('webpack');
 const path = require('path');
-const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 module.exports = {
-    mode: 'production',
+    mode: isDevelopment ? 'development' : 'production',
     optimization: {
         usedExports: true,
     },
@@ -11,63 +11,50 @@ module.exports = {
     output: {
         filename: "[name].bundle.js",
         chunkFilename: "[name].bundle.js",
-        path: path.join(__dirname, 'public'),
+        path: path.join(__dirname, './build'),
         publicPath: "/"
     },
     module: {
-        rules: [{
-            loader: 'babel-loader',
-            test: /\.js$/,
-            exclude: /node_modules/,
-            options: {
-                plugins: [
-                    ['import', {libraryName: "antd", style: true}]
-                ]
-            },
-        },
-        {
-            // modify
-            test: [/\.css$/, /\.less$/],
-            use: [
-                {loader: 'style-loader'},
-                {
-                    loader: 'css-loader',
-                    options: {
-                        importLoaders: 1,
-                    },
+        rules: [
+            {
+                loader: 'babel-loader',
+                test: /\.js$/,
+                exclude: /node_modules/,
+                options: {
+                    plugins: [
+                        ['import', {libraryName: "antd", style: true}]
+                    ]
                 },
-                {
-                    loader: 'less-loader', // compiles Less to CSS
+            },
+            {
+                // modify
+                test: /\.less$/i,
+                use: [{
+                    loader: "style-loader"
+                }, {
+                    loader: "css-loader"
+                }, {
+                    loader: "less-loader",
                     options: {
-                        javascriptEnabled: true
+                        lessOptions: {
+                            javascriptEnabled: true,
+                        }
                     }
                 }
-            ],
-        },
-        {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-                {
-                    loader: 'url-loader',
-                    options: {
-                        publicPath: "./",
-                        limit: 10000
-                    }
-                }
-            ]
-        }]
+                ],
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                type: "asset/resource"
+            }]
     },
     devServer: {
         open: true,
         hot: true,
         compress: true,
-        contentBase: path.join(__dirname, 'public'),
-        historyApiFallback: true
+        static: path.join(__dirname, 'public'),
+        historyApiFallback: true,
     },
-    plugins: [
-        new BundleAnalyzer(),
-        new webpack.HotModuleReplacementPlugin()
-    ],
     performance: {
         hints: false
     }
