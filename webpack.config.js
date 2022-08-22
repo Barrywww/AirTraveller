@@ -1,14 +1,18 @@
 const path = require('path');
+const {merge} = require('webpack-merge')
 const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const isDevelopment = process.env.NODE_ENV === 'development'
 
-module.exports = {
+const basicConfig = {
     mode: isDevelopment ? 'development' : 'production',
     entry: './src/js/bundle.js',
     output: {
         filename: "[name].bundle.js",
         path: path.join(__dirname, './build/'),
         publicPath: "/build/"
+    },
+    optimization: {
+        usedExports: true
     },
     module: {
         rules: [
@@ -44,6 +48,12 @@ module.exports = {
                 type: "asset/resource"
             }]
     },
+}
+
+const devConfig = {
+    optimization: {
+        usedExports: false,
+    },
     plugins: [
         new BundleAnalyzer(),
     ],
@@ -54,7 +64,6 @@ module.exports = {
         static: path.join(__dirname, 'public'),
         historyApiFallback: true,
     },
-    performance: {
-        hints: false
-    }
 }
+
+module.exports = isDevelopment ? merge(basicConfig, devConfig) : basicConfig
