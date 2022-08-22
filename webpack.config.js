@@ -1,18 +1,14 @@
 const path = require('path');
-
+const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 module.exports = {
     mode: isDevelopment ? 'development' : 'production',
-    optimization: {
-        usedExports: true,
-    },
     entry: './src/js/bundle.js',
     output: {
         filename: "[name].bundle.js",
-        chunkFilename: "[name].bundle.js",
-        path: path.join(__dirname, './build'),
-        publicPath: "/"
+        path: path.join(__dirname, './build/'),
+        publicPath: "/build/"
     },
     module: {
         rules: [
@@ -48,6 +44,9 @@ module.exports = {
                 type: "asset/resource"
             }]
     },
+    plugins: [
+        new BundleAnalyzer(),
+    ],
     devServer: {
         open: true,
         hot: true,
