@@ -8,7 +8,7 @@ import "./index.less"
 import Logo from "../../../res/logo_2.png";
 import Background from "../../../res/main_bg_1.jpg";
 import Cookies from "js-cookie";
-import {MainRouter} from "../../bundle";
+import MainRouter from "../../bundle";
 
 
 const adminTypes = ["Booking Agent", "Airline Staff"];
