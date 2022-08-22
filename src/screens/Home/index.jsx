@@ -3,7 +3,7 @@ import {Button, Col, DatePicker, Divider, Form, Input, Layout, Menu, Row} from "
 import moment from "moment";
 import Cookies from "js-cookie";
 import {Link, NavLink} from "react-router-dom";
-import Logo from "../../../res/logo_2.png";
+import Logo from "res/logo_2.png";
 import {AlertTwoTone} from "@ant-design/icons";
 
 import './index.less';

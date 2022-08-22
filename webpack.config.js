@@ -5,7 +5,7 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 
 const basicConfig = {
     mode: isDevelopment ? 'development' : 'production',
-    entry: './src/js/bundle.js',
+    entry: './src/bundle.js',
     output: {
         filename: "[name].bundle.js",
         path: path.join(__dirname, './build/'),
@@ -18,7 +18,7 @@ const basicConfig = {
         rules: [
             {
                 loader: 'babel-loader',
-                test: /\.js$/,
+                test: /\.(jsx|js)$/,
                 exclude: /node_modules/,
                 options: {
                     plugins: [
@@ -48,6 +48,15 @@ const basicConfig = {
                 type: "asset/resource"
             }]
     },
+    resolve: {
+        alias: {
+            screens: path.resolve(__dirname, 'src/screens'),
+            components: path.resolve(__dirname, 'src/components'),
+            utils: path.resolve(__dirname, 'src/utils'),
+            res: path.resolve(__dirname, 'res'),
+        },
+        extensions: ['.jsx', '.js'],
+    }
 }
 
 const devConfig = {
