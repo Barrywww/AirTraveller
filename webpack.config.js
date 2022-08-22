@@ -51,6 +51,7 @@ const basicConfig = {
   },
   resolve: {
     alias: {
+      src: path.resolve(__dirname, 'src'),
       screens: path.resolve(__dirname, 'src/screens'),
       components: path.resolve(__dirname, 'src/components'),
       utils: path.resolve(__dirname, 'src/utils'),

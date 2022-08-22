@@ -1,6 +1,4 @@
-import React from 'react';
-
-
+import React from 'react'
 import {
     Layout,
     Breadcrumb,
@@ -11,23 +9,23 @@ import {
     Form,
     DatePicker,
     Table,
-} from 'antd';
-const { Content, Footer } = Layout;
-import {MainHeader, TravelAlert} from "../Home";
+} from 'antd'
+const { Content, Footer } = Layout
+import { MainHeader, TravelAlert } from "../Home"
 
 import 'antd/dist/antd.compact.less'
-import '../User/Login/index.less'
-import {NavLink} from "react-router-dom";
-import {staffFlightColumns} from "../../utils/res";
+import 'screens/User/Login/index.less'
+import { NavLink } from "react-router-dom"
+import { staffFlightColumns } from "utils/res"
 
 class StatusPage extends React.Component{
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {srcCity: "", dstCity: ""}
     }
 
     componentDidMount() {
-        document.title = 'Flight Status | AirTraveller - Excited to fly.';
+        document.title = 'Flight Status | AirTraveller - Excited to fly.'
     }
 
     async fetchData(values){
@@ -37,26 +35,26 @@ class StatusPage extends React.Component{
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(values),
             credentials: "include"
-        };
-        response = await fetch("http://localhost:3000/api/search/status", requestOptions).then(response => response.json())
-        console.log(response);
-        for (let i=0; i<response.length; i++){
-            response[i]["departure_time"] = response[i]["departure_time"].slice(0, -5);
-            response[i]["arrival_time"] = response[i]["arrival_time"].slice(0, -5);
         }
-        this.setState({data: response});
+        response = await fetch("http://localhost:3000/api/search/status", requestOptions).then(response => response.json())
+        console.log(response)
+        for (let i=0; i<response.length; i++){
+            response[i]["departure_time"] = response[i]["departure_time"].slice(0, -5)
+            response[i]["arrival_time"] = response[i]["arrival_time"].slice(0, -5)
+        }
+        this.setState({data: response})
     }
 
     render(){
         const onFinish = values => {
             // console.log("on finish");
-            this.fetchData(values);
+            this.fetchData(values)
             this.setState({data: []})
-        };
+        }
 
         const onFinishFailed = errorInfo => {
-            console.log('Failed:', errorInfo);
-        };
+            console.log('Failed:', errorInfo)
+        }
 
         return(
             <Layout style={{minHeight: "100%", maxWidth:"100%"}}>
@@ -134,4 +132,4 @@ class StatusPage extends React.Component{
     }
 }
 
-export default StatusPage;
+export default StatusPage
