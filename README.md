@@ -1,6 +1,19 @@
 # AirTraveller
 A multi-role ticket booking system inplemented with React + Node.js + Express + MySQL
 
+## ⚠️ Refactoring!
+This project was originally written in 2020 and is now undergoing complete structure refactoring.
+
+Refactor Checklist:
+- [x]  Directory Refac
+- [ ]  Axios
+- [ ]  TypeScript
+- [x]  Webpack 5
+- [x]  ESLint
+- [ ]  Functional Components
+- [ ]  PostCSS (Optional)
+- [ ]  Next.js (Optional)
+
 ## Features
 ### User
 * Search flights based on Dept./Arr. city name or ICAO code or IATA code; flight number.
