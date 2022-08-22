@@ -14,12 +14,12 @@ import {
     Table, Statistic
 } from 'antd';
 const { Content, Footer } = Layout;
-import {MainHeader, TravelAlert} from "./index";
+import {MainHeader, TravelAlert} from "../Home";
 
 import 'antd/dist/antd.compact.less'
-import '../css/login.less'
+import '../User/Login/index.less'
 import {NavLink} from "react-router-dom";
-import {staffFlightColumns} from "./res";
+import {staffFlightColumns} from "../../utils/res";
 import ReactDOM from "react-dom";
 import {createBrowserHistory} from "history";
 import {Bar} from "react-chartjs-2";

@@ -14,10 +14,10 @@ import {
     Table, Space, Modal
 } from 'antd';
 const { Content, Footer } = Layout;
-import {MainHeader, TravelAlert} from "./index";
+import {MainHeader, TravelAlert} from "../Home";
 
 import 'antd/dist/antd.compact.less'
-import '../css/login.less'
+import '../User/Login/index.less'
 import {NavLink} from "react-router-dom";
 import moment from "moment";
 import ReactDOM from "react-dom";

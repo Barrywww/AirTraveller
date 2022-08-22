@@ -19,8 +19,8 @@ import {
 import {UserOutlined, LaptopOutlined, NotificationOutlined, SearchOutlined, WalletOutlined, GlobalOutlined,
 HomeOutlined
 } from '@ant-design/icons';
-import Logo from "../../res/logo_2.png";
-import {agentFlightColumns, topCustomerColumnsPur, topCustomerColumnsCom} from "./res"
+import Logo from "../../../res/logo_2.png";
+import {agentFlightColumns, topCustomerColumnsPur, topCustomerColumnsCom} from "../../utils/res"
 import {NavLink} from "react-router-dom";
 import Cookies from "js-cookie";
 import {Bar} from "react-chartjs-2";

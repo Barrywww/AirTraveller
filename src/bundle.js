@@ -2,14 +2,14 @@ import React, {lazy, Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
-const LoginPage = lazy(() => import("./user_login"));
-const RegistrationPage = lazy(() => import("./user_registration"));
-const AdminRouter = lazy(() => import("./admin"));
-const SearchPage = lazy(() => import("./search"));
-const StatusPage =lazy(() => import("./status"));
-const ProfilePage = lazy(() => import("./profile"));
-const HomePage = lazy(() => import("./index"))
-const StaffPage = lazy(() => import("./staff"))
+const LoginPage = lazy(() => import("./screens/User/Login"));
+const RegistrationPage = lazy(() => import("./screens/User/Registration"));
+const AdminRouter = lazy(() => import("./screens/Admin"));
+const SearchPage = lazy(() => import("./screens/Search"));
+const StatusPage =lazy(() => import("./screens/Status"));
+const ProfilePage = lazy(() => import("./screens/Profile"));
+const HomePage = lazy(() => import("./screens/Home"))
+const StaffPage = lazy(() => import("./screens/Staff"))
 
 class MainRouter extends React.Component{
     render() {

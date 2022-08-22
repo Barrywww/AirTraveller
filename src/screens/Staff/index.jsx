@@ -18,14 +18,14 @@ import {
     UserOutlined, GlobalOutlined,
     HomeOutlined, AppstoreOutlined, TeamOutlined, CompassOutlined, ReconciliationOutlined
 } from '@ant-design/icons';
-import Logo from "../../res/logo_2.png";
+import Logo from "../../../res/logo_2.png";
 import {
     staffFlightColumns,
     topCustomerColumnsPur,
     airportColumns,
     airplaneColumns,
     agentColumnsPur, agentColumnsCom, destColumns
-} from "./res"
+} from "../../utils/res"
 import {NavLink} from "react-router-dom";
 import Cookies from "js-cookie";
 import {Bar, Pie} from "react-chartjs-2";

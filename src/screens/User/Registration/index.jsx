@@ -9,10 +9,10 @@ import {
     TeamOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import {MainHeader, TravelAlert} from "./index";
+import {MainHeader, TravelAlert} from "../../Home";
 
 import 'antd/dist/antd.compact.less'
-import '../css/registration.less'
+import './index.less'
 import {NavLink} from "react-router-dom";
 import {createBrowserHistory} from "history";
 

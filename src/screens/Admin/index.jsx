@@ -2,13 +2,13 @@ import {Layout, Menu, Form, Input, Button, Row, Col, Dropdown} from "antd";
 import {IdcardOutlined, TeamOutlined, DownOutlined} from "@ant-design/icons";
 import React from "react";
 import {Route, Switch, NavLink} from "react-router-dom";
-import AgentPage from "./agent";
-import StaffPage from "./staff";
-import "../css/admin_template.less"
-import Logo from "../../res/logo_2.png";
-import Background from "../../res/main_bg_1.jpg";
+import AgentPage from "../Agent";
+import StaffPage from "../Staff";
+import "./index.less"
+import Logo from "../../../res/logo_2.png";
+import Background from "../../../res/main_bg_1.jpg";
 import Cookies from "js-cookie";
-import {MainRouter} from "./bundle";
+import {MainRouter} from "../../bundle";
 
 
 const adminTypes = ["Booking Agent", "Airline Staff"];
