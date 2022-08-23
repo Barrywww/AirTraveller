@@ -10,6 +10,7 @@ const StatusPage = lazy(() => import('./screens/Status'))
 const ProfilePage = lazy(() => import('./screens/Profile'))
 const HomePage = lazy(() => import('./screens/Home'))
 const StaffPage = lazy(() => import('./screens/Staff'))
+const TsTestPage = lazy(() => import('./screens/TypeScriptTest'))
 
 class MainRouter extends React.Component {
   render() {
@@ -25,6 +26,9 @@ class MainRouter extends React.Component {
             <Route path="/status" component={StatusPage} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/admin/staff" component={StaffPage} />
+            <Route path="/ts-test">
+              <TsTestPage message="TypeScript!"/>
+            </Route>
           </Switch>
         </Suspense>
       </BrowserRouter>

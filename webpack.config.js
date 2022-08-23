@@ -28,6 +28,15 @@ const basicConfig = {
         },
       },
       {
+        test: /\.(ts|tsx)?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        loader: 'source-map-loader',
+      },
+      {
         // modify
         test: /\.less$/i,
         use: [{
@@ -57,7 +66,7 @@ const basicConfig = {
       utils: path.resolve(__dirname, 'src/utils'),
       res: path.resolve(__dirname, 'res'),
     },
-    extensions: ['.jsx', '.js'],
+    extensions: ['.jsx', '.js', '.tsx', '.ts'],
   },
 }
 
@@ -68,6 +77,7 @@ const devConfig = {
   plugins: [
     new BundleAnalyzer(),
   ],
+  devtool: 'inline-cheap-module-source-map',
   devServer: {
     open: true,
     hot: true,
