@@ -6,11 +6,11 @@ This project was originally written in 2020 and is now undergoing complete struc
 
 Refactor Checklist:
 - [x]  Directory Refac
-- [ ]  Axios
-- [ ]  TypeScript
+- [ ]  Axios - In Progress
+- [ ]  TypeScript - In Progress
 - [x]  Webpack 5
 - [x]  ESLint
-- [ ]  Functional Components
+- [ ]  Functional Components - In Progress
 - [ ]  PostCSS (Optional)
 - [ ]  Next.js (Optional)
 
