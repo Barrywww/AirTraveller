@@ -25,8 +25,8 @@ const { Content, Footer } = Layout
 let modal_key = 0
 
 type PurchaseData = {
-  flight_num: string,
-  airline_name: string
+  flightNum: string,
+  airlineName: string
 }
 
 type PurchaseModalType = {
@@ -71,8 +71,8 @@ const PurchaseModal: React.FC<PurchaseModalType> = props => {
 
   const onFinish = async () => {
     const postValues = {
-      flightNum: props.data.flight_num,
-      airlineName: props.data.airline_name,
+      flightNum: props.data.flightNum,
+      airlineName: props.data.airlineName,
     }
     const response = await purchaseTicket(postValues)
     if (response.status === 200) {
