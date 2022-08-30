@@ -5,7 +5,15 @@
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"],
+      "screens/*": ["src/screens/*"],
+      "components/*": ["src/components/*"],
+      "utils/*": ["src/utils/*"],
+      "res/*": ["rec/*"]
+    }
   },
   "include": [
     "src"

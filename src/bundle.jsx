@@ -7,7 +7,7 @@ const { lazy, Suspense } = React
 const LoginPage = lazy(() => import('./screens/User/Login'))
 const RegistrationPage = lazy(() => import('./screens/User/Registration'))
 const AdminRouter = lazy(() => import('./screens/Admin'))
-const SearchPage = lazy(() => import('./screens/Search'))
+const SearchPage = lazy(() => import('screens/Search'))
 const StatusPage = lazy(() => import('./screens/Status'))
 const ProfilePage = lazy(() => import('./screens/Profile'))
 const HomePage = lazy(() => import('./screens/Home'))
